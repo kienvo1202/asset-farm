@@ -1,0 +1,17 @@
+[
+  {
+    "name": "kienvo",
+    "email": "k@gmail.com",
+    "farms": [
+      "5de608e532c37a25186e3931"
+    ]
+  },
+  {
+    "name": "kien2",
+    "email": "k2@gmail.com",
+    "farms": [
+      "5de608e532c37a25186e393b",
+      "5de608e532c37a25186e393a"
+    ]
+  }
+]
