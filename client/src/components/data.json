@@ -1,0 +1,88 @@
+[
+  {
+    "book": "ididid",
+    "user": "ididid",
+    "income": [
+      {
+        "name": "Job Salary",
+        "roc": 40500000,
+        "effectiveDate": 1572282000000
+      },
+      {
+        "name": "Job Bonus",
+        "roc": 5000000,
+        "effectiveDate": 1572282000000
+      },
+      {
+        "name": "Other",
+        "roc": 1000000,
+        "effectiveDate": 1572282000000
+      }
+    ],
+    "expense": [
+      {
+        "name": "Food - Essential"
+      },
+      {
+        "name": "Food - Luxury"
+      },
+      {
+        "name": "Clothes"
+      },
+      {
+        "name": "Transport"
+      }
+    ],
+    "asset": [
+      {
+        "type": "cash",
+        "name": "Cash",
+        "balance": 2600000,
+        "meanGrowth": 0
+      },
+      {
+        "type": "cash",
+        "name": "Vietcombank",
+        "balance": 1130000,
+        "meanGrowth": 0.01
+      },
+      {
+        "type": "saving",
+        "name": "VIB",
+        "balance": 55000000,
+        "effectiveDate": 1572282000000,
+        "meanGrowth": 0.054,
+        "term": 1,
+        "termUnit": "month"
+      },
+      {
+        "type": "saving",
+        "name": "VCSC Certificate Deposit",
+        "balance": 20000000,
+        "effectiveDate": 1572282000000,
+        "meanGrowth": 0.102,
+        "term": 2,
+        "termUnit": "year"
+      },
+      {
+        "type": "investment",
+        "name": "VN Stock",
+        "balance": 110000000
+      },
+      {
+        "type": "toy",
+        "name": "Car",
+        "balance": 522000000
+      }
+    ],
+    "transaction": [
+      {
+        "eventTime": 1572282000000,
+        "from": "Income",
+        "to": "Vietcombank",
+        "amount": 1000,
+        "description": "abc"
+      }
+    ]
+  }
+]
