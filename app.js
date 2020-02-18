@@ -1,7 +1,8 @@
 // app.js is for Express stuff
 const express = require('express');
 const morgan = require('morgan');
-const cardRouter = require('./routes/cardRoutes');
+const ioRouter = require('./routes/ioRoutes');
+const assetRouter = require('./routes/assetRoutes');
 const transactionRouter = require('./routes/transactionRoutes');
 const compression = require('compression');
 const app = express();
@@ -13,7 +14,8 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '12kb' }));
 
 //3. ROUTES
-app.use('/api/v1/cards', cardRouter);
+app.use('/api/v1/ios', ioRouter);
+app.use('/api/v1/assets', assetRouter);
 app.use('/api/v1/transactions', transactionRouter);
 
 //serve static

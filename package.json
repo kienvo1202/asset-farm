@@ -22,7 +22,8 @@
     "validator": "^12.1.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": ">=10.0.0"
