@@ -15,7 +15,7 @@ const ioSchema = new mongoose.Schema({
       message: 'only certain types allowed'
     }
   },
-  amount: { type: Number },
+  amount: { type: Number},
   budget: { type: Number },
   effectiveDate: { type: Date,default: Date.now() },
   createdAt: {type: Date, default: Date.now()},

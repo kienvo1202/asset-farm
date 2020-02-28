@@ -35,7 +35,7 @@ class Footer extends React.Component {
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Just A Builder
+                Visit The Builder!
               </a>
             </div>
           </Col>

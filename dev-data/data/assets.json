@@ -1,0 +1,63 @@
+[
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "cash",
+    "name": "Cash",
+    "balance": 4600000,
+    "meanGrowth": 0
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "cash",
+    "name": "Vietcombank",
+    "balance": 350000,
+    "meanGrowth": 0.01
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "saving",
+    "name": "VIB",
+    "balance": 30000000,
+    "defaultProbability": 0.0001,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.054,
+    "term": 1,
+    "termUnit": "month"
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "saving",
+    "name": "VCSC Certificate Deposit",
+    "balance": 20000000,
+    "defaultProbability": 0.0003,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.09,
+    "term": 2,
+    "termUnit": "year"
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "stock",
+    "name": "VN Stock",
+    "balance": 110000000,
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "bond",
+    "name": "FECredit",
+    "balance": 20000000,
+    "defaultProbability": 0.005,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.1,
+    "term": 1,
+    "termUnit": "year"
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "toy",
+    "name": "Car",
+    "balance": 25000000,
+    "effectiveDate": 1572282000000
+  }
+]

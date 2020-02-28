@@ -15,40 +15,40 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Index from "views/Index.jsx";
-import Dashboard from "views/Dashboard.jsx";
+import Reports from "views/Reports.jsx";
+import Records from "views/Records.jsx";
 import Profile from "views/examples/Profile.jsx";
 import Maps from "views/examples/Maps.jsx";
 import Register from "views/examples/Register.jsx";
-import Login from "views/examples/Login.jsx";
+import Login from "views/Login.jsx";
 import Tables from "views/examples/Tables.jsx";
 import Icons from "views/examples/Icons.jsx";
 
 var routes = [
   {
     path: "/index",
-    name: "Record & Report",
+    name: "Record Transactions",
     icon: "ni ni-tv-2 text-primary",
-    component: Dashboard,
+    component: Records,
     layout: "/admin"
   },
   {
-    path: "/icons",
-    name: "Transactions",
+    path: "/reports",
+    name: "Financial Reports",
     icon: "ni ni-planet text-blue",
-    component: Icons,
+    component: Reports,
     layout: "/admin"
   },
   {
     path: "/maps",
-    name: "Planning",
+    name: "Budget Planning",
     icon: "ni ni-pin-3 text-orange",
     component: Maps,
     layout: "/admin"
   },
   {
     path: "/user-profile",
-    name: "User Profile",
+    name: "Wealth Planning",
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin"

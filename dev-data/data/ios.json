@@ -1,0 +1,70 @@
+[
+  {
+    "farm": "111122223333444455556666",
+    "type": "income",
+    "name": "Job Salary",
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "income",
+    "name": "Job Bonus",
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "income",
+    "name": "Other",
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Food"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Clothing"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Personal Care"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Housing"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Household Goods"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Health Care"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Transportation"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Education"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Entertainment"
+  },
+  {
+    "farm": "111122223333444455556666",
+    "type": "expense",
+    "name": "Other"
+  }
+]

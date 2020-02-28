@@ -15,27 +15,27 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 // reactstrap components
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col } from 'reactstrap';
 
 // core components
-import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
-import AuthFooter from "components/Footers/AuthFooter.jsx";
+import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
+import AuthFooter from 'components/Footers/AuthFooter.jsx';
 
-import routes from "routes.js";
+import routes from 'routes.js';
 
 class Auth extends React.Component {
   componentDidMount() {
-    document.body.classList.add("bg-default");
+    document.body.classList.add('bg-default');
   }
   componentWillUnmount() {
-    document.body.classList.remove("bg-default");
+    document.body.classList.remove('bg-default');
   }
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/auth") {
+      if (prop.layout === '/auth') {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -58,10 +58,16 @@ class Auth extends React.Component {
               <div className="header-body text-center mb-7">
                 <Row className="justify-content-center">
                   <Col lg="5" md="6">
-                    <h1 className="text-white">Welcome!</h1>
-                    <p className="text-lead text-light">
-                      Use these awesome forms to login or create new account in
-                      your project for free.
+                    <h1 className="text-white text-left">Asset Farm</h1>
+                    <h3 className="text-white text-left">
+                      An overkill tool to manage personal finance
+                    </h3>
+                    <p className="text-lead text-white text-left">
+                      Things you can do 1. Manage income and expense, 2.
+                      Benchmark against budget 3. Monitor net earnings and
+                      assets accumulation 3. Allocate asset types and simulate
+                      investment returns 4. Find the most suited financial
+                      products
                     </p>
                   </Col>
                 </Row>

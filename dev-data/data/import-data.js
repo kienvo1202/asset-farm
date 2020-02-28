@@ -1,8 +1,10 @@
 const fs = require('fs');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const Card = require('../../models/cardModel');
+const IO = require('../../models/ioModel');
+const Asset = require('../../models/assetModel');
 const User = require('../../models/userModel');
+const Farm = require('../../models/farmModel');
 const Transaction = require('../../models/transactionModel');
 
 dotenv.config({ path: `${__dirname}/../../config.env` });
@@ -24,8 +26,10 @@ mongoose
   });
 
 //READ JSON
-const cards = JSON.parse(fs.readFileSync(`${__dirname}/cards.json`, 'utf-8'));
+const ios = JSON.parse(fs.readFileSync(`${__dirname}/ios.json`, 'utf-8'));
+const assets = JSON.parse(fs.readFileSync(`${__dirname}/assets.json`, 'utf-8'));
 const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
+const farms = JSON.parse(fs.readFileSync(`${__dirname}/farms.json`, 'utf-8'));
 const transactions = JSON.parse(
   fs.readFileSync(`${__dirname}/transactions.json`, 'utf-8')
 );
@@ -33,8 +37,10 @@ const transactions = JSON.parse(
 //IMPORT to DB
 const importData = async () => {
   try {
-    await Card.create(cards); //create can be use for an array of objects
+    await IO.create(ios); //create can be use for an array of objects
+    await Asset.create(assets); //create can be use for an array of objects
     await User.create(users);
+    await Farm.create(farms);
     await Transaction.create(transactions);
     console.log('Data loaded!', transactions);
   } catch (err) {
@@ -45,7 +51,8 @@ const importData = async () => {
 
 const deleteData = async () => {
   try {
-    await Card.deleteMany();
+    await IO.deleteMany();
+    await Asset.deleteMany();
     await User.deleteMany();
     await Transaction.deleteMany();
     console.log('Del all');
