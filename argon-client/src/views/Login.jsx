@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React from 'react';
 
 // reactstrap components
 import {
@@ -31,9 +31,11 @@ import {
   InputGroup,
   Row,
   Col
-} from "reactstrap";
+} from 'reactstrap';
 
 class Login extends React.Component {
+  
+
   render() {
     return (
       <>
@@ -44,7 +46,6 @@ class Login extends React.Component {
                 <small>Sign in with</small>
               </div>
               <div className="btn-wrapper text-center">
-                
                 <Button
                   className="btn-neutral btn-icon"
                   color="default"
@@ -52,10 +53,7 @@ class Login extends React.Component {
                   onClick={e => e.preventDefault()}
                 >
                   <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("assets/img/icons/common/google.svg")}
-                    />
+                    <img alt="..." src={require('assets/img/icons/common/google.svg')} />
                   </span>
                   <span className="btn-inner--text">Google</span>
                 </Button>
@@ -106,7 +104,7 @@ class Login extends React.Component {
                   </Button>
                 </div>
               </Form>*/}
-            </CardBody> 
+            </CardBody>
           </Card>
           {/* <Row className="mt-3">
             <Col xs="6">
