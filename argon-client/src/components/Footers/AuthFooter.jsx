@@ -36,7 +36,7 @@ class Login extends React.Component {
                     href="https://www.linkedin.com/in/trung-kien-vo-8170533a/"
                     target="_blank"
                   >
-                    Visit The Builder!
+                    The Builder
                   </a>
                 </div>
               </Col>

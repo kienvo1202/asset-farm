@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import example from './exampleReducer';
 
 const exampleReducer = () => {
@@ -26,37 +27,59 @@ const recordDisplayModeReducer = (mode = displayMode, action) => {
   }
 };
 
-const transactionsReducer = (data =[], action) => {
+const transactionsReducer = (data = [], action) => {
   switch (action.type) {
     case 'FETCH_TRANSACTIONS':
       return action.payload;
     default:
       return data;
   }
-}
+};
 
-const iosReducer = (data =[], action) => {
+const iosReducer = (data = [], action) => {
   switch (action.type) {
     case 'FETCH_IOS':
       return action.payload;
     default:
       return data;
   }
-}
+};
 
-const assetsReducer = (data =[], action) => {
+const assetsReducer = (data = [], action) => {
   switch (action.type) {
     case 'FETCH_ASSETS':
       return action.payload;
     default:
       return data;
   }
-}
+};
+
+const initialAuth = {
+  isAuthLoaded: false,
+  isSignedIn: null,
+  userInfo: { userId: null, email: null, name: null, givenName: null, familyName: null, imageUrl: null }
+};
+const authReducer = (state = initialAuth, action) => {
+  switch (action.type) {
+    case 'SIGN_IN':
+      return { ...state, isSignedIn: true, userInfo: action.payload };
+    case 'SIGN_OUT':
+      return { ...state, isSignedIn: false, userInfo: initialAuth.userInfo };
+    case 'AUTH_UNLOAD':
+      return { ...state, isAuthLoaded: false };
+    case 'AUTH_LOAD':
+      return { ...state, isAuthLoaded: true };
+    default:
+      return state;
+  }
+};
 
 export default combineReducers({
   example: exampleReducer,
   displayMode: recordDisplayModeReducer,
   transactions: transactionsReducer,
   ios: iosReducer,
-  assets: assetsReducer
+  assets: assetsReducer,
+  auth: authReducer,
+  form: formReducer
 });

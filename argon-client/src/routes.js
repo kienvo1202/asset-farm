@@ -17,6 +17,9 @@
 */
 import Reports from "views/Reports.jsx";
 import Records from "views/Records.jsx";
+import Asset from "views/Asset.jsx";
+import IO from "views/IO.jsx";
+import Budget from "views/Budget.jsx";
 import Profile from "views/examples/Profile.jsx";
 import Maps from "views/examples/Maps.jsx";
 import Register from "views/examples/Register.jsx";
@@ -33,17 +36,24 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/reports",
-    name: "Financial Reports",
-    icon: "ni ni-planet text-blue",
-    component: Reports,
+    path: "/incomeexpense",
+    name: "Income & Expense",
+    icon: "ni ni-chart-bar-32 text-purple",
+    component: IO,
     layout: "/admin"
   },
   {
-    path: "/maps",
-    name: "Budget Planning",
-    icon: "ni ni-pin-3 text-orange",
-    component: Maps,
+    path: "/asset",
+    name: "Asset",
+    icon: "ni ni-planet text-blue",
+    component: Asset,
+    layout: "/admin"
+  },
+  {
+    path: "/budget",
+    name: "Budget & Planning",
+    icon: "ni ni-planet text-blue",
+    component: Budget,
     layout: "/admin"
   },
   {
@@ -52,27 +62,6 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin"
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
-    layout: "/admin"
-  },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth"
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: Register,
-    layout: "/auth"
   }
 ];
 export default routes;

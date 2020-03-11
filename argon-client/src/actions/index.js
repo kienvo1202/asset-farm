@@ -37,3 +37,26 @@ export const fetchAssets = () => {
         dispatch({type: 'FETCH_ASSETS', payload: assets.data.data.docs})
     }
 }
+
+
+export const signIn = (userInfo) => {
+    return {
+        type:'SIGN_IN',
+        payload:userInfo
+    }
+}
+export const signOut = () => {
+    return {
+        type:'SIGN_OUT'
+    }
+}
+export const authLoad = () => {
+    return {
+        type:'AUTH_LOAD'
+    }
+}
+export const authUnload = () => {
+    return {
+        type:'AUTH_UNLOAD'
+    }
+}

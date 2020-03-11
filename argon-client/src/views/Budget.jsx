@@ -45,15 +45,16 @@ import {
 import { chartOptions, parseOptions, chartExample1, chartExample2 } from 'variables/charts.jsx';
 
 import Header from 'components/Headers/Header.jsx';
-import $ from 'cheerio';
+import formatDate from '../utils/helper';
+import axios from 'axios';
 import { connect } from 'react-redux';
-import TransactionCard from '../components/TransactionCard'
-import RecordCard from '../components/RecordCard'
+import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
+import BudgetCard from '../components/BudgetCard';
 
-class Records extends React.Component {
-  constructor() {
-    super();
-  }  
+class Budget extends React.Component {
+  componentDidMount() {
+    this.props.fetchAssets();
+  }
 
   render() {
     return (
@@ -62,11 +63,8 @@ class Records extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
-            <Col className="mb-5 mb-xl-0">
-              <RecordCard />
-            </Col>
-            <Col className="mb-5 mb-xl-0" xl="6">
-              <TransactionCard />
+            <Col>
+              <BudgetCard />
             </Col>
           </Row>
         </Container>
@@ -75,4 +73,8 @@ class Records extends React.Component {
   }
 }
 
-export default Records;
+const mapStateToProps = state => {
+  return {};
+};
+
+export default connect(mapStateToProps, { fetchTransactions, fetchIOs, fetchAssets })(Budget);

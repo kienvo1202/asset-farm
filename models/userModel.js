@@ -3,6 +3,8 @@ const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: [true, 'Must have name'] },
+  firstName: { type: String, required: [true, 'Must have'] },
+  lastName: { type: String, required: [true, 'Must have'] },
   email: {
     type: String,
     required: [true, 'Must have email'],
@@ -10,6 +12,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Invalid email...']
   },
+  googleId: { type: String, unique: true },
   farms: [
     {
       type: mongoose.Schema.ObjectId,

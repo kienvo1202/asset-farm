@@ -32,6 +32,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
+import GoogleAuth from '../components/GoogleAuth';
 
 class Login extends React.Component {
   
@@ -46,22 +47,12 @@ class Login extends React.Component {
                 <small>Sign in with</small>
               </div>
               <div className="btn-wrapper text-center">
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img alt="..." src={require('assets/img/icons/common/google.svg')} />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
+                <GoogleAuth />
               </div>
             </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <p>Well, that's your only option.</p>
+                <p>Well, that's the only option for now..</p>
                 <p>A standalone authentication system has not yet been implemented ~ </p>
               </div>
               {/* <Form role="form">

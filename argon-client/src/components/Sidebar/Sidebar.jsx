@@ -16,10 +16,10 @@
 
 */
 /*eslint-disable*/
-import React from "react";
-import { NavLink as NavLinkRRD, Link } from "react-router-dom";
+import React from 'react';
+import { NavLink as NavLinkRRD, Link } from 'react-router-dom';
 // nodejs library to set properties for components
-import { PropTypes } from "prop-types";
+import { PropTypes } from 'prop-types';
 
 // reactstrap components
 import {
@@ -50,7 +50,9 @@ import {
   Container,
   Row,
   Col
-} from "reactstrap";
+} from 'reactstrap';
+
+import GoogleAuth from '../../components/GoogleAuth';
 
 var ps;
 
@@ -64,7 +66,7 @@ class Sidebar extends React.Component {
   }
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
+    return this.props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
   }
   // toggles collapse between opened and closed (true/false)
   toggleCollapse = () => {
@@ -83,12 +85,7 @@ class Sidebar extends React.Component {
     return routes.map((prop, key) => {
       return (
         <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={this.closeCollapse}
-            activeClassName="active"
-          >
+          <NavLink to={prop.layout + prop.path} tag={NavLinkRRD} onClick={this.closeCollapse} activeClassName="active">
             <i className={prop.icon} />
             {prop.name}
           </NavLink>
@@ -107,32 +104,20 @@ class Sidebar extends React.Component {
     } else if (logo && logo.outterLink) {
       navbarBrandProps = {
         href: logo.outterLink,
-        target: "_blank"
+        target: '_blank'
       };
     }
     return (
-      <Navbar
-        className="navbar-vertical fixed-left navbar-light bg-white"
-        expand="md"
-        id="sidenav-main"
-      >
+      <Navbar className="navbar-vertical fixed-left navbar-light bg-white" expand="md" id="sidenav-main">
         <Container fluid>
           {/* Toggler */}
-          <button
-            className="navbar-toggler"
-            type="button"
-            onClick={this.toggleCollapse}
-          >
+          <button className="navbar-toggler" type="button" onClick={this.toggleCollapse}>
             <span className="navbar-toggler-icon" />
           </button>
           {/* Brand */}
           {logo ? (
             <NavbarBrand className="pt-0" {...navbarBrandProps}>
-              <img
-                alt={logo.imgAlt}
-                className="navbar-brand-img"
-                src={logo.imgSrc}
-              />
+              <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
             </NavbarBrand>
           ) : null}
           {/* User */}
@@ -141,11 +126,7 @@ class Sidebar extends React.Component {
               <DropdownToggle nav className="nav-link-icon">
                 <i className="ni ni-bell-55" />
               </DropdownToggle>
-              <DropdownMenu
-                aria-labelledby="navbar-default_dropdown_1"
-                className="dropdown-menu-arrow"
-                right
-              >
+              <DropdownMenu aria-labelledby="navbar-default_dropdown_1" className="dropdown-menu-arrow" right>
                 <DropdownItem>Action</DropdownItem>
                 <DropdownItem>Another action</DropdownItem>
                 <DropdownItem divider />
@@ -156,10 +137,7 @@ class Sidebar extends React.Component {
               <DropdownToggle nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                    <img
-                      alt="..."
-                      src={require("assets/img/theme/team-1-800x800.jpg")}
-                    />
+                    <img alt="..." src={require('assets/img/theme/team-1-800x800.jpg')} />
                   </span>
                 </Media>
               </DropdownToggle>
@@ -210,11 +188,7 @@ class Sidebar extends React.Component {
                   </Col>
                 ) : null}
                 <Col className="collapse-close" xs="6">
-                  <button
-                    className="navbar-toggler"
-                    type="button"
-                    onClick={this.toggleCollapse}
-                  >
+                  <button className="navbar-toggler" type="button" onClick={this.toggleCollapse}>
                     <span />
                     <span />
                   </button>
@@ -239,31 +213,9 @@ class Sidebar extends React.Component {
             </Form>
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
-            {/* Divider */}
-            {/* <hr className="my-3" /> */}
-            {/* Heading */}
-            {/* <h6 className="navbar-heading text-muted">Documentation</h6> */}
-            {/* Navigation */}
-            {/* <Nav className="mb-md-3" navbar>
-              <NavItem>
-                <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/documentation/overview?ref=adr-admin-sidebar">
-                  <i className="ni ni-spaceship" />
-                  Getting started
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/documentation/colors?ref=adr-admin-sidebar">
-                  <i className="ni ni-palette" />
-                  Foundation
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/documentation/alerts?ref=adr-admin-sidebar">
-                  <i className="ni ni-ui-04" />
-                  Components
-                </NavLink>
-              </NavItem>
-            </Nav> */}
+
+            <hr className="my-3" />
+            <GoogleAuth />
           </Collapse>
         </Container>
       </Navbar>

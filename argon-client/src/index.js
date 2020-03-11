@@ -17,7 +17,6 @@
 */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import 'assets/vendor/nucleo/css/nucleo.css';
 import 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css';
@@ -27,8 +26,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reducers from './reducers';
 import thunk from 'redux-thunk';
-import AdminLayout from 'layouts/Admin.jsx';
-import AuthLayout from 'layouts/Auth.jsx';
+import App from './components/App';
 import 'assets/vendor/nucleo/css/nucleo.css';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -36,13 +34,7 @@ const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Switch>
-        <Route path="/admin" render={props => <AdminLayout {...props} />} />
-        <Route path="/auth" render={props => <AuthLayout {...props} />} />
-        <Redirect from="/" to="/admin/index" />
-      </Switch>
-    </BrowserRouter>
+    <App />
   </Provider>,
   document.getElementById('root')
 );
