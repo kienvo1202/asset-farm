@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import example from './exampleReducer';
@@ -16,7 +17,6 @@ const exampleSelectReducer = (select = null, action) => {
 
   return select;
 };
-
 const displayMode = { recurringMode: false, quickEditMode: false };
 const recordDisplayModeReducer = (mode = displayMode, action) => {
   switch (action.type) {
@@ -26,11 +26,18 @@ const recordDisplayModeReducer = (mode = displayMode, action) => {
       return mode;
   }
 };
-
-const transactionsReducer = (data = [], action) => {
+const transactionsReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_TRANSACTIONS':
-      return action.payload;
+      return {...data, ..._.mapKeys(action.payload,'_id')};
+    case 'FETCH_TRANSACTION':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'CREATE_TRANSACTION':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'EDIT_TRANSACTION':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'DELETE_TRANSACTION':
+      return _.omit(data,action.payload)
     default:
       return data;
   }

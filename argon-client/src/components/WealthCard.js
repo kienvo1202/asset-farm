@@ -21,7 +21,7 @@ import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
-class AssetCard extends React.Component {
+class WealthCard extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -35,7 +35,9 @@ class AssetCard extends React.Component {
       return (
         <tr>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {e.name}</td>
-
+          <td>
+            <Progress max="100" value="75" barClassName="bg-gradient-info" />
+          </td>
           <td>balance</td>
         </tr>
       );
@@ -45,7 +47,7 @@ class AssetCard extends React.Component {
 
   render() {
     return (
-      <Card className="shadow">
+        <Card className="shadow">
         <CardHeader className="border-0">
           <Row className="align-items-center">
             <div className="col">
@@ -63,6 +65,9 @@ class AssetCard extends React.Component {
           <thead className="thead-light">
             <tr>
               <th scope="col">Types</th>
+              <th scope="col">Info</th>
+              <th scope="col">Future Balance</th>
+              <th scope="col">Current Balance</th>
               {this.state.displayMonth.map(e => {
                 return (
                   <th scope="col">
@@ -74,11 +79,13 @@ class AssetCard extends React.Component {
                   </th>
                 );
               })}
+              
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">Cash</th>
+              <td><input type='range'></input></td>
               <td>1,480</td>
             </tr>
             {this.assetsRowRender('cash')}
@@ -119,4 +126,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {})(AssetCard);
+export default connect(mapStateToProps, {})(WealthCard);

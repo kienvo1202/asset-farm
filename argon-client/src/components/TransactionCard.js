@@ -25,25 +25,27 @@ class TransactionCard extends React.Component {
   }
 
   renderTransactionsRow = () =>
-    this.props.transactions.map(e => {
-      return (
-        <tr>
-          <td>
-            <FormGroup>
-              <select className="form-control form-control-sm" id="select-to">
-                <option>1</option>
-                <option>2</option>
-              </select>
-            </FormGroup>
-          </td>
-          <td>{new Date(e.effectiveDate).toDateString()}</td>
-          <td>{e.description}</td>
-          <td>{e.amount}</td>
-          <td>{e.from}</td>
-          <td>{e.to}</td>
-        </tr>
-      );
-    });
+    Object.values(this.props.transactions)
+      .sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0))
+      .map(e => {
+        return (
+          <tr>
+            <td>
+              <FormGroup>
+                <select className="form-control form-control-sm" id="select-to">
+                  <option>1</option>
+                  <option>2</option>
+                </select>
+              </FormGroup>
+            </td>
+            <td>{new Date(e.effectiveDate).toDateString()}</td>
+            <td>{e.descriptionFree}</td>
+            <td>{e.amount}</td>
+            <td>{e.debit}</td>
+            <td>{e.credit}</td>
+          </tr>
+        );
+      });
 
   render() {
     return (

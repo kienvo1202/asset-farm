@@ -33,9 +33,32 @@ import {
   Col
 } from 'reactstrap';
 import GoogleAuth from '../components/GoogleAuth';
+import { connect } from 'react-redux';
+import { withRouter, Link } from 'react-router-dom';
 
 class Login extends React.Component {
-  
+  renderEntrance = () => {
+    if (this.props.isSignedIn) {
+      return (
+        <Link to="/admin/index">
+          <div className="btn-wrapper text-center">
+            <Button className="btn-neutral btn-icon" color="default">
+              {/* <span className="btn-inner--icon">
+            <img alt="..." src={require('assets/img/icons/common/google.svg')} />
+          </span> */}
+              <span className="btn-inner--text">Enter The Farm!</span>
+            </Button>
+          </div>
+        </Link>
+      );
+    } else {
+      return (
+        <div className="text-center text-muted mb-4">
+          <p>Login to enter your farm</p>
+        </div>
+      );
+    }
+  };
 
   render() {
     return (
@@ -43,18 +66,12 @@ class Login extends React.Component {
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
             <CardHeader className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
-                <small>Sign in with</small>
-              </div>
               <div className="btn-wrapper text-center">
                 <GoogleAuth />
               </div>
             </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <p>Well, that's the only option for now..</p>
-                <p>A standalone authentication system has not yet been implemented ~ </p>
-              </div>
+              {this.renderEntrance()}
               {/* <Form role="form">
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
@@ -123,4 +140,11 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+    isSignedIn: state.auth.isSignedIn,
+    isAuthLoaded: state.auth.isAuthLoaded
+  };
+};
+//withRouter to integrate Router & Redux, give access to this.props.location from everywhere
+export default withRouter(connect(mapStateToProps)(Login));

@@ -20,6 +20,7 @@ import Records from "views/Records.jsx";
 import Asset from "views/Asset.jsx";
 import IO from "views/IO.jsx";
 import Budget from "views/Budget.jsx";
+import Wealth from "views/Wealth.jsx";
 import Profile from "views/examples/Profile.jsx";
 import Maps from "views/examples/Maps.jsx";
 import Register from "views/examples/Register.jsx";
@@ -36,7 +37,7 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/incomeexpense",
+    path: "/io",
     name: "Income & Expense",
     icon: "ni ni-chart-bar-32 text-purple",
     component: IO,
@@ -57,11 +58,18 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/user-profile",
+    path: "/wealth",
     name: "Wealth Planning",
     icon: "ni ni-single-02 text-yellow",
-    component: Profile,
+    component: Wealth,
     layout: "/admin"
+  },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
+    layout: "/auth"
   }
 ];
 export default routes;

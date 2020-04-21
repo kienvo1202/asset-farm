@@ -1,18 +1,22 @@
 [
   {
     "effectiveDate": 1572282000000,
-    "farm": "5de608e532c37a25186e3931",
-    "from": "Income",
-    "to": "Vietcombank",
+    "farm": "5de608e532c37a25186e3932",
+    "transactionNo": 1,
+    "debit": "5e95d66688dc1334381808e3",
+    "credit": "5e95d66688dc1334381808f1",
     "amount": 1000,
-    "description": "abc"
+    "debitIsFrom": true,
+    "descriptionFree": "Traveloka"
   },
   {
     "effectiveDate": 1572282000000,
-    "farm": "5de608e532c37a25186e3931",
-    "from": "Vietcombank",
-    "to": "Food - Luxury",
+    "farm": "5de608e532c37a25186e3932",
+    "transactionNo": 2,
+    "debit": "5e95d66688dc1334381808f1",
+    "credit": "5e95d66688dc1334381808e6",
     "amount": 600000,
-    "description": "Nhau"
+    "debitIsFrom": true,
+    "descriptionFree": "Nhau"
   }
 ]

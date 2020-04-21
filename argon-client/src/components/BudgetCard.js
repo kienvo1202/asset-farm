@@ -21,7 +21,7 @@ import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
-class IOCard extends React.Component {
+class BudgetCard extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -89,4 +89,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {})(IOCard);
+export default connect(mapStateToProps, {})(BudgetCard);

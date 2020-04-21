@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button } from 'reactstrap';
-
 import { connect } from 'react-redux';
 import { signIn, signOut, authUnload, authLoad } from '../actions/';
+import { withRouter, Link } from 'react-router-dom';
+import axios from 'axios';
 
 class GoogleAuth extends React.Component {
   componentDidMount() {
@@ -14,21 +15,23 @@ class GoogleAuth extends React.Component {
         })
         .then(() => {
           this.auth = window.gapi.auth2.getAuthInstance();
-          this.props.authLoad();
+          //this.props.authLoad();
           this.onAuthChange(this.auth.isSignedIn.get());
           this.auth.isSignedIn.listen(this.onAuthChange);
+          console.log("Auth Component Initiation")
         });
     });
   }
   componentWillUnmount() {
-    this.props.authUnload();
+    //this.props.authUnload();
   }
 
-  onAuthChange = isSignedIn => {
+  
+  onAuthChange = async isSignedIn => { // isSignedIn here is maybe passed on from callback of this.auth.isSignedIn.listen
     if (isSignedIn) {
-      console.log('OAUTH2', this.auth, 'currentUser', this.auth.currentUser.get().getBasicProfile());
+      console.log('OAUTH2', isSignedIn, this.auth, 'currentUser', this.auth.currentUser.get().getBasicProfile());
       const userInfo = {
-        userId: this.auth.currentUser.get().getId(),
+        googleId: this.auth.currentUser.get().getId(),
         email: this.auth.currentUser
           .get()
           .getBasicProfile()
@@ -37,11 +40,11 @@ class GoogleAuth extends React.Component {
           .get()
           .getBasicProfile()
           .getName(),
-        givenName: this.auth.currentUser
+        firstName: this.auth.currentUser
           .get()
           .getBasicProfile()
           .getGivenName(),
-        familyName: this.auth.currentUser
+        lastName: this.auth.currentUser
           .get()
           .getBasicProfile()
           .getFamilyName(),
@@ -50,17 +53,31 @@ class GoogleAuth extends React.Component {
           .getBasicProfile()
           .getImageUrl()
       };
-      console.log(userInfo);
       this.props.signIn(userInfo);
+      //console.log("state",this.props.auth.userInfo);
+      
+      const user = await axios.get(`/api/v1/users?googleId=${userInfo.googleId}`)
+      console.log("Check new user")
+      if (user.data.result == 0) {
+        console.log("Registering new user")
+        const newFarm = await axios.post(`/api/v1/farms/`,{name:`${userInfo.name}'s Farm`})
+        
+        userInfo.farms = ["5de608e532c37a25186e3911", newFarm.data.data.newDoc._id]
+        console.log(newFarm, userInfo)
+        const newUser = await axios.post(`/api/v1/users/`,userInfo)
+        console.log(newUser)
+      }
+      
     } else {
       this.props.signOut();
     }
   };
 
   renderAuthButton() {
-    if ((this.props.isSignedIn === null) | !this.auth) {
+    console.log("Render button")
+    if ((this.props.auth.isSignedIn === null) | !this.auth) {
       return <div>Checking login status ...</div>;
-    } else if (this.props.isSignedIn) {
+    } else if (this.props.auth.isSignedIn) {
       return (
         <Button className="btn-neutral btn-icon" color="default" onClick={this.auth.signOut}>
           <span className="btn-inner--icon">
@@ -88,9 +105,8 @@ class GoogleAuth extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    isSignedIn: state.auth.isSignedIn,
-    isAuthLoaded: state.auth.isAuthLoaded
+    auth: state.auth
   };
 };
 
-export default connect(mapStateToProps, { signIn, signOut, authUnload, authLoad })(GoogleAuth);
+export default withRouter(connect(mapStateToProps, { signIn, signOut, authUnload, authLoad })(GoogleAuth));

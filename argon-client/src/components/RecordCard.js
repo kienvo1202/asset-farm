@@ -19,11 +19,33 @@ import {
 
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { toggleRecurring } from '../actions/';
+import { toggleRecurring, createTransaction } from '../actions/';
 import formatDate from '../utils/helper';
 
 class RecordCard extends React.Component {
-  renderTransactionDate = ({ input }) => {
+  onSubmit = formValues => {
+    console.log(formValues);
+    const transactions = {
+      farm: '5de608e532c37a25186e3932',
+      transactionNo: 12,
+      debit: "5e95d66688dc1334381808f1", //formValues.from,
+      credit: "5e95d66688dc1334381808e6",
+      amount: formValues.amount,
+      debitIsFrom: true,
+      descriptionStandard: null,
+      descriptionFree: formValues.description,
+      effectiveDate: formValues.transactionDate
+    };
+    this.props.createTransaction(transactions);
+  };
+
+  renderError = ({ error, submitFailed }) => {
+    if (error && submitFailed) {
+      return <div className="text-warning">{error}</div>;
+    }
+  };
+
+  renderTransactionDate = ({ input, meta }) => {
     return (
       <FormGroup>
         <label className="form-control-label">Transaction Date</label>
@@ -34,20 +56,22 @@ class RecordCard extends React.Component {
           type="date"
           {...input}
         />
+        {this.renderError(meta)}
       </FormGroup>
     );
   };
-
-  renderAmount = ({ input }) => {
+  renderAmount = ({ input, meta }) => {
+    console.log(meta);
     return (
       <FormGroup>
         <label className="form-control-label">Amount</label>
         <Input className="form-control-alternative" id="amount" placeholder={1000} type="number" {...input} />
+        {this.renderError(meta)}
       </FormGroup>
     );
   };
 
-  renderDescription = ({ input }) => {
+  renderDescription = ({ input, meta }) => {
     return (
       <FormGroup>
         <label className="form-control-label" htmlFor="input-description">
@@ -58,7 +82,9 @@ class RecordCard extends React.Component {
           id="input-description"
           placeholder="Description"
           type="text"
+          {...input}
         />
+        {this.renderError(meta)}
       </FormGroup>
     );
   };
@@ -80,28 +106,30 @@ class RecordCard extends React.Component {
     );
   };
 
-  renderFrom = ({ input }) => {
+  renderFrom = ({ input, meta }) => {
     return (
       <FormGroup>
         <label className="form-control-label">From</label>
         <Input type="select" id="select-from" {...input}>
-          <option>Salary</option>
-          <option>2</option>
+          <option value="5de608e532c37a25186e3931">Salary</option>
+          <option value="5de608e532c37a25186e3931">Vietcombank</option>
           <option>3</option>
         </Input>
+        {this.renderError(meta)}
       </FormGroup>
     );
   };
 
-  renderTo = ({ input }) => {
+  renderTo = ({ input, meta }) => {
     return (
       <FormGroup>
         <label className="form-control-label">To</label>
         <Input type="select" id="select-to" {...input}>
-          <option>1</option>
+          <option value="5de608e532c37a25186e3931">Vietcombank</option>
           <option>Expense</option>
           <option>3</option>
         </Input>
+        {this.renderError(meta)}
       </FormGroup>
     );
   };
@@ -163,7 +191,7 @@ class RecordCard extends React.Component {
           </Row>
         </CardHeader>
         <CardBody>
-          <Form>
+          <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
             <div>
               <Row>
                 <Col xs="6">
@@ -225,6 +253,9 @@ class RecordCard extends React.Component {
                   <Field name="recurringTimes" component={this.renderRecurringTimes} />
                 </Col>
               </Row>
+              <Row>
+                <Button color="primary">Submit</Button>
+              </Row>
             </div>
           </Form>
         </CardBody>
@@ -232,11 +263,34 @@ class RecordCard extends React.Component {
     );
   }
 }
+
+const validate = formValues => {
+  const errors = {};
+  if (!formValues.transactionDate) {
+    errors.transactionDate = 'Please fill in Transaction Date';
+  }
+  if (!formValues.amount) {
+    errors.amount = 'Please fill in Amount';
+  }
+  if (!formValues.description) {
+    errors.description = 'Please fill in Description';
+  }
+  if (!formValues.from) {
+    errors.from = 'Please fill in From';
+  }
+  if (!formValues.to) {
+    errors.to = 'Please fill in To';
+  }
+
+  return errors;
+};
+
 const mapStateToProps = state => {
   return {
     recurringMode: state.displayMode.recurringMode
   };
 };
 export default reduxForm({
-  form: 'record'
-})(connect(mapStateToProps, { toggleRecurring })(RecordCard));
+  form: 'record',
+  validate: validate
+})(connect(mapStateToProps, { toggleRecurring, createTransaction })(RecordCard));

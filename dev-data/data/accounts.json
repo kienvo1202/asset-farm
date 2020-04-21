@@ -1,0 +1,151 @@
+[
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "income",
+    "name": "Job Salary",
+    "nativeDebitCredit": false,
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "income",
+    "name": "Job Bonus",
+    "nativeDebitCredit": false,
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "income",
+    "name": "Other",
+    "nativeDebitCredit": false,
+    "effectiveDate": 1572282000000
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Food",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Clothing",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Personal Care",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Housing",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Household Goods",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Health Care",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Transportation",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Education",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Entertainment",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
+    "name": "Other",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "cash",
+    "name": "Cash",
+    "balance": 4600000,
+    "meanGrowth": 0,
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "cash",
+    "name": "Vietcombank",
+    "balance": 350000,
+    "meanGrowth": 0.01,
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "saving",
+    "name": "VIB",
+    "balance": 30000000,
+    "defaultProbability": 0.0001,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.054,
+    "term": 1,
+    "termUnit": "month",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "saving",
+    "name": "VCSC Certificate Deposit",
+    "balance": 20000000,
+    "defaultProbability": 0.0003,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.09,
+    "term": 2,
+    "termUnit": "year",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "stock",
+    "name": "VN Stock",
+    "balance": 110000000,
+    "effectiveDate": 1572282000000,
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "bond",
+    "name": "FECredit",
+    "balance": 20000000,
+    "defaultProbability": 0.005,
+    "effectiveDate": 1572282000000,
+    "meanGrowth": 0.1,
+    "term": 1,
+    "termUnit": "year",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "toy",
+    "name": "Car",
+    "balance": 25000000,
+    "effectiveDate": 1572282000000,
+    "nativeDebitCredit": true
+  }
+]

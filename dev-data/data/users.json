@@ -1,17 +1,18 @@
 [
   {
-    "name": "kienvo",
+    "firstName": "K",
+    "lastName": "V",
     "email": "k@gmail.com",
+    "googleId": "testtesttesttest",
     "farms": [
       "5de608e532c37a25186e3931"
     ]
   },
   {
-    "name": "kien2",
-    "email": "k2@gmail.com",
-    "farms": [
-      "5de608e532c37a25186e393b",
-      "5de608e532c37a25186e393a"
-    ]
+    "firstName": "2",
+    "lastName": "2 2",
+    "email": "2@gmail.com",
+    "googleId": "testtesttesttest22",
+    "farms": []
   }
 ]
