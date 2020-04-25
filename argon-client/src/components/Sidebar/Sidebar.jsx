@@ -52,7 +52,8 @@ import {
   Col
 } from 'reactstrap';
 
-import GoogleAuth from '../../components/GoogleAuth';
+import GoogleAuth from '../widgets/GoogleAuth';
+import DemoButton from '../widgets/DemoButton';
 
 var ps;
 
@@ -218,6 +219,10 @@ class Sidebar extends React.Component {
 
             <hr className="my-3" />
             <GoogleAuth />
+            <hr className="my-3" />
+            <DemoButton /> 
+              
+
           </Collapse>
         </Container>
       </Navbar>

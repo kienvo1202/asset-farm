@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { signIn, signOut, authUnload, authLoad } from '../actions/';
+import { signIn, signOut, changeCurrentFarm } from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -29,7 +29,7 @@ class GoogleAuth extends React.Component {
   
   onAuthChange = async isSignedIn => { // isSignedIn here is maybe passed on from callback of this.auth.isSignedIn.listen
     if (isSignedIn) {
-      console.log('OAUTH2', isSignedIn, this.auth, 'currentUser', this.auth.currentUser.get().getBasicProfile());
+      //console.log('OAUTH2', isSignedIn, this.auth, 'currentUser', this.auth.currentUser.get().getBasicProfile());
       const userInfo = {
         googleId: this.auth.currentUser.get().getId(),
         email: this.auth.currentUser
@@ -53,23 +53,32 @@ class GoogleAuth extends React.Component {
           .getBasicProfile()
           .getImageUrl()
       };
-      this.props.signIn(userInfo);
       //console.log("state",this.props.auth.userInfo);
       
       const user = await axios.get(`/api/v1/users?googleId=${userInfo.googleId}`)
-      console.log("Check new user")
+      console.log("Check new user",user.data.data.docs[0])
       if (user.data.result == 0) {
-        console.log("Registering new user")
+        //console.log("Registering new user")
         const newFarm = await axios.post(`/api/v1/farms/`,{name:`${userInfo.name}'s Farm`})
+        userInfo.farms = [newFarm.data.data.newDoc._id] //"5de608e532c37a25186e3911" demo
         
-        userInfo.farms = ["5de608e532c37a25186e3911", newFarm.data.data.newDoc._id]
-        console.log(newFarm, userInfo)
         const newUser = await axios.post(`/api/v1/users/`,userInfo)
-        console.log(newUser)
+        this.props.signIn(newUser.data.data.newDoc);
+
+        //Creating new accounts from default
+        const defaultAccounts = await axios.get(`/api/v1/accounts?farm=5de608e532c37a25186e3931`)
+        console.log(defaultAccounts)
+        const newAccounts = defaultAccounts.data.data.docs.map(e => {return {...e, farm:newFarm.data.data.newDoc._id, _id:null}})
+        await axios.post(`/api/v1/accounts`,newAccounts)
+      } else {
+        this.props.signIn(user.data.data.docs[0]);
       }
-      
+      //console.log(this.props.auth.userInfo.farms[0])
+      this.props.changeCurrentFarm(this.props.auth.userInfo.farms[0])
+
     } else {
       this.props.signOut();
+      this.props.changeCurrentFarm("")
     }
   };
 
@@ -109,4 +118,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, { signIn, signOut, authUnload, authLoad })(GoogleAuth));
+export default withRouter(connect(mapStateToProps, { signIn, signOut,changeCurrentFarm })(GoogleAuth));

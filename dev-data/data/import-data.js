@@ -41,10 +41,10 @@ const importData = async () => {
   try {
     // await IO.create(ios); //create can be use for an array of objects
     // await Asset.create(assets); 
-    // await Account.create(accounts); 
+    await Account.create(accounts); 
     // await User.create(users);    
     // await Farm.create(farms);    
-    await Transaction.create(transactions);
+    //await Transaction.create(transactions);
     console.log('Data loaded!');
   } catch (err) {
     console.log(err);

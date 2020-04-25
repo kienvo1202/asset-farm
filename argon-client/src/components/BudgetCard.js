@@ -20,6 +20,7 @@ import {
 import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
 
 class BudgetCard extends React.Component {
   constructor() {
@@ -28,7 +29,9 @@ class BudgetCard extends React.Component {
       displayMonth: [0, 1, 2, 3, 4]
     };
   }
-
+  componentDidMount() {
+    this.props.fetchAssets();
+  }
   iosRowRender = ioName => {
     const data = this.props.ios.filter(e => e.type === ioName);
     const rows = data.map(e => {
@@ -89,4 +92,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {})(BudgetCard);
+export default connect(mapStateToProps, {fetchTransactions, fetchIOs, fetchAssets})(BudgetCard);

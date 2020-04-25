@@ -20,6 +20,7 @@ import {
 import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
 
 class WealthCard extends React.Component {
   constructor() {
@@ -28,7 +29,11 @@ class WealthCard extends React.Component {
       displayMonth: [0, 1, 2, 3, 4]
     };
   }
-
+  componentDidMount() {
+    this.props.fetchIOs();
+    this.props.fetchAssets();
+    this.props.fetchTransactions();
+  }
   assetsRowRender = assetName => {
     const data = this.props.assets.filter(e => e.type === assetName);
     const rows = data.map(e => {
@@ -126,4 +131,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, {})(WealthCard);
+export default connect(mapStateToProps, {fetchTransactions, fetchIOs, fetchAssets})(WealthCard);

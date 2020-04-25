@@ -20,6 +20,7 @@ import {
 import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
 
 class IOCard extends React.Component {
   constructor() {
@@ -28,7 +29,10 @@ class IOCard extends React.Component {
       displayMonth: [0, 1, 2, 3, 4]
     };
   }
-
+  componentDidMount() {
+    this.props.fetchIOs(this.props.currentFarm);
+    this.props.fetchAssets(this.props.currentFarm);
+  }
   iosRowRender = ioName => {
     const data = this.props.ios.filter(e => e.type === ioName);
     const rows = data.map(e => {
@@ -105,8 +109,9 @@ const mapStateToProps = state => {
   return {
     ios: state.ios,
     assets: state.assets,
-    transactions: state.transactions
+    transactions: state.transactions,
+    currentFarm: state.currentFarm
   };
 };
 
-export default connect(mapStateToProps, {})(IOCard);
+export default connect(mapStateToProps, {fetchTransactions, fetchIOs, fetchAssets })(IOCard);

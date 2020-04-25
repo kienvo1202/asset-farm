@@ -16,10 +16,24 @@ const userSchema = new mongoose.Schema({
   farms: [
     {
       type: mongoose.Schema.ObjectId,
-      ref: 'Farm'
+      ref: 'Farm_02'
     }
   ]
 });
+
+//DOCUMENT MIDDLEWARE, run before save(), create()
+
+//QUERY MIDDLEWARE, run before query
+userSchema.pre(/^find/, function(next) {
+  // this.populate({
+  //   path: 'farms',
+  //   select: '-__v'
+  // });
+  //console.log("middleware user pop")
+  next();
+});
+
+//AGGREGATE MIDDLEWARE, before aggregate
 
 const User = mongoose.model('User', userSchema);
 

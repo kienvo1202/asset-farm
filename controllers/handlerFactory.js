@@ -73,7 +73,7 @@ exports.getAll = Model =>
     //this is a hack for reviews
     //let filter = {};
     //if (req.params.tourId) filter = { tour: req.params.tourId };
-
+    //console.log("3333333333",req.query)
     const features = new APIFeatures(Model.find(), req.query)
       .filter()
       .sort()

@@ -7,6 +7,9 @@ router
   .get(accountController.getAllAccounts)
   .post(accountController.createAccount);
 
+router.route('/assets').get(accountController.getAllAccountAssets);
+router.route('/ios').get(accountController.getAllAccountIOs);
+
 router
   .route('/:id')
   .get(accountController.getAccount)

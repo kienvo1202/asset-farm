@@ -48,13 +48,10 @@ import Header from 'components/Headers/Header.jsx';
 import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
 import BudgetCard from '../components/BudgetCard';
 
 class Budget extends React.Component {
-  componentDidMount() {
-    this.props.fetchAssets();
-  }
+  
 
   render() {
     return (
@@ -77,4 +74,4 @@ const mapStateToProps = state => {
   return {};
 };
 
-export default connect(mapStateToProps, { fetchTransactions, fetchIOs, fetchAssets })(Budget);
+export default connect(mapStateToProps, {  })(Budget);

@@ -12,3 +12,14 @@ exports.getAccount = factory.getOne(Account);
 exports.createAccount = factory.createOne(Account);
 exports.updateAccount = factory.updateOne(Account);
 exports.deleteAccount = factory.deleteOne(Account);
+
+exports.getAllAccountAssets = factory.getAll(
+  Account.find()
+    .where('type')
+    .nin(['income', 'expense'])
+);
+exports.getAllAccountIOs = factory.getAll(
+    Account.find()
+      .where('type')
+      .in(['income', 'expense'])
+  );

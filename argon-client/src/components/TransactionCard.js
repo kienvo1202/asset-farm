@@ -21,31 +21,37 @@ import { fetchTransactions } from '../actions';
 
 class TransactionCard extends React.Component {
   componentDidMount() {
-    this.props.fetchTransactions();
+    console.log("Trans Card",this.props.currentFarm)
+    this.props.fetchTransactions(this.props.currentFarm);
   }
 
-  renderTransactionsRow = () =>
-    Object.values(this.props.transactions)
+  renderTransactionsRow = () => {
+    //console.log(Object.values(this.props.transactions))
+    const rows = Object.values(this.props.transactions)
       .sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0))
+      .slice(0,20)
       .map(e => {
         return (
           <tr>
-            <td>
+            {/* <td>
               <FormGroup>
                 <select className="form-control form-control-sm" id="select-to">
                   <option>1</option>
                   <option>2</option>
                 </select>
               </FormGroup>
-            </td>
+            </td> */}
             <td>{new Date(e.effectiveDate).toDateString()}</td>
             <td>{e.descriptionFree}</td>
             <td>{e.amount}</td>
-            <td>{e.debit}</td>
-            <td>{e.credit}</td>
+            <td>{e.credit.name}</td>
+            <td>{e.debit.name}</td>
           </tr>
         );
-      });
+      })
+
+      return rows;
+    };
 
   render() {
     return (
@@ -67,7 +73,6 @@ class TransactionCard extends React.Component {
         <Table className="align-items-center table-flush" responsive>
           <thead className="thead-light">
             <tr>
-              <th scope="col">Record Date</th>
               <th scope="col">Transaction Date</th>
               <th scope="col">Description</th>
               <th scope="col">Amount</th>
@@ -84,7 +89,8 @@ class TransactionCard extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    transactions: state.transactions
+    transactions: state.transactions,
+    currentFarm: state.currentFarm
   };
 };
 

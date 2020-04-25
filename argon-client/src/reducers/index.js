@@ -26,10 +26,20 @@ const recordDisplayModeReducer = (mode = displayMode, action) => {
       return mode;
   }
 };
+
+const currentFarmReducer = (farm = '', action) => {
+  switch (action.type) {
+    case 'CHANGE_CURRENT_FARM':
+      return action.payload;
+    default:
+      return farm;
+  }
+};
+
 const transactionsReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_TRANSACTIONS':
-      return {...data, ..._.mapKeys(action.payload,'_id')};
+      return { ...data, ..._.mapKeys(action.payload, '_id') };
     case 'FETCH_TRANSACTION':
       return { ...data, [action.payload._id]: action.payload };
     case 'CREATE_TRANSACTION':
@@ -37,7 +47,7 @@ const transactionsReducer = (data = {}, action) => {
     case 'EDIT_TRANSACTION':
       return { ...data, [action.payload._id]: action.payload };
     case 'DELETE_TRANSACTION':
-      return _.omit(data,action.payload)
+      return _.omit(data, action.payload);
     default:
       return data;
   }
@@ -64,7 +74,14 @@ const assetsReducer = (data = [], action) => {
 const initialAuth = {
   isAuthLoaded: false,
   isSignedIn: null,
-  userInfo: { userId: null, email: null, name: null, givenName: null, familyName: null, imageUrl: null }
+  userInfo: {
+    userId: null,
+    email: null,
+    name: null,
+    firstName: null,
+    lastName: null,
+    farms: []
+  }
 };
 const authReducer = (state = initialAuth, action) => {
   switch (action.type) {
@@ -84,6 +101,7 @@ const authReducer = (state = initialAuth, action) => {
 export default combineReducers({
   example: exampleReducer,
   displayMode: recordDisplayModeReducer,
+  currentFarm: currentFarmReducer,
   transactions: transactionsReducer,
   ios: iosReducer,
   assets: assetsReducer,

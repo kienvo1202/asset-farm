@@ -17,6 +17,13 @@ export const toggleRecurring = recurringMode => {
     }
 }
 
+export const changeCurrentFarm = farmId => {
+    return {
+        type:'CHANGE_CURRENT_FARM',
+        payload: farmId
+    }
+}
+
 export const fetchIO1s = () => {
     return async function(dispatch, getState) {
         const ios = await axios.get('/api/v1/ios');
@@ -24,16 +31,16 @@ export const fetchIO1s = () => {
     }
 }
 
-export const fetchIOs = () => {
+export const fetchIOs = (farmId) => {
     return async function(dispatch, getState) {
-        const ios = await axios.get('/api/v1/ios');
+        const ios = await axios.get(`/api/v1/accounts/ios?farm=${farmId}`);
         dispatch({type: 'FETCH_IOS', payload: ios.data.data.docs})
     }
 }
 
-export const fetchAssets = () => {
+export const fetchAssets = (farmId) => {
     return async function(dispatch, getState) {
-        const assets = await axios.get('/api/v1/assets');
+        const assets = await axios.get(`/api/v1/accounts/assets?farm=${farmId}`);
         dispatch({type: 'FETCH_ASSETS', payload: assets.data.data.docs})
     }
 }
@@ -60,36 +67,5 @@ export const authUnload = () => {
         type:'AUTH_UNLOAD'
     }
 }
-
-export const fetchTransactions = () => {
-    return async function(dispatch, getState) {
-        const response = await axios.get('/api/v1/transactions');
-        dispatch({type: 'FETCH_TRANSACTIONS', payload: response.data.data.docs})
-    }
-}
-export const fetchTransaction = (id) => {
-    return async function(dispatch, getState) {
-        const response = await axios.get(`/api/v1/transactions/${id}`);
-        dispatch({type: 'FETCH_TRANSACTION', payload: response.data.data.docs})
-    }
-}
-export const createTransaction = (formValues) => {
-    return async function(dispatch, getState) {
-        const response = await axios.post('/api/v1/transactions',formValues);
-        //console.log(response)
-        dispatch({type: 'CREATE_TRANSACTION', payload: response.data.data.newDoc})
-    }
-}
-export const editTransaction = (id, formValues) => {
-    return async function(dispatch, getState) {
-        const response = await axios.patch(`/api/v1/transactions/${id}`,formValues);
-        dispatch({type: 'EDIT_TRANSACTION', payload: response.data.data.docs})
-    }
-}
-export const deleteTransaction = (id) => {
-    return async function(dispatch, getState) {
-        const response = await axios.delete(`/api/v1/transactions/${id}`);
-        dispatch({type: 'DELETE_TRANSACTION', payload: id})
-    }
-}
+export * from './transactionAPI';
 

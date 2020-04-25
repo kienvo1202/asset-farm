@@ -48,16 +48,10 @@ import Header from 'components/Headers/Header.jsx';
 import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { fetchTransactions, fetchIOs, fetchAssets } from '../actions';
 import IOCard from '../components/IOCard';
 
 class IO extends React.Component {
-  componentDidMount() {
-    this.props.fetchIOs();
-    this.props.fetchAssets();
-    this.props.fetchTransactions();
-  }
-
+ 
   render() {
     return (
       <>
@@ -79,4 +73,4 @@ const mapStateToProps = state => {
   return {};
 };
 
-export default connect(mapStateToProps, { fetchTransactions, fetchIOs, fetchAssets })(IO);
+export default connect(mapStateToProps, { })(IO);

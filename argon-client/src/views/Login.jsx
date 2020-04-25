@@ -32,7 +32,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
-import GoogleAuth from '../components/GoogleAuth';
+import GoogleAuth from '../components/widgets/GoogleAuth';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 

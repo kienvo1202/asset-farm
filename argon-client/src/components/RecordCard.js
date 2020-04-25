@@ -19,24 +19,31 @@ import {
 
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { toggleRecurring, createTransaction } from '../actions/';
+import { toggleRecurring, createTransaction, fetchTransactions, fetchIOs, fetchAssets } from '../actions/';
 import formatDate from '../utils/helper';
 
 class RecordCard extends React.Component {
-  onSubmit = formValues => {
+  componentDidMount() {
+    console.log(this.props.currentFarm)
+    this.props.fetchIOs(this.props.currentFarm)
+    this.props.fetchAssets(this.props.currentFarm)
+    
+  }
+
+  onSubmit = async formValues => {
     console.log(formValues);
     const transactions = {
-      farm: '5de608e532c37a25186e3932',
+      farm: this.props.currentFarm,
       transactionNo: 12,
-      debit: "5e95d66688dc1334381808f1", //formValues.from,
-      credit: "5e95d66688dc1334381808e6",
+      debit: formValues.to, //formValues.from,
+      credit: formValues.from,
       amount: formValues.amount,
-      debitIsFrom: true,
       descriptionStandard: null,
       descriptionFree: formValues.description,
       effectiveDate: formValues.transactionDate
     };
-    this.props.createTransaction(transactions);
+    await this.props.createTransaction(transactions);
+    await this.props.fetchTransactions(); //re-fetch to fill from, to ....
   };
 
   renderError = ({ error, submitFailed }) => {
@@ -106,14 +113,31 @@ class RecordCard extends React.Component {
     );
   };
 
+  iosOptionRender = ioName => {
+    const data = this.props.ios.filter(e => e.type === ioName);
+    const rows = data.map(e => {
+      return (
+      <option value={e._id}>{e.type} - {e.name}</option>
+      );
+    });
+    return rows;
+  };
+  assetsOptionRender = () => {
+    const data = this.props.assets
+    const rows = data.map(e => {
+      return (
+      <option value={e._id}>{e.type} - {e.name}</option>
+      );
+    });
+    return rows;
+  };
   renderFrom = ({ input, meta }) => {
     return (
       <FormGroup>
         <label className="form-control-label">From</label>
         <Input type="select" id="select-from" {...input}>
-          <option value="5de608e532c37a25186e3931">Salary</option>
-          <option value="5de608e532c37a25186e3931">Vietcombank</option>
-          <option>3</option>
+          {this.iosOptionRender('income')}
+          {this.assetsOptionRender()}
         </Input>
         {this.renderError(meta)}
       </FormGroup>
@@ -125,9 +149,8 @@ class RecordCard extends React.Component {
       <FormGroup>
         <label className="form-control-label">To</label>
         <Input type="select" id="select-to" {...input}>
-          <option value="5de608e532c37a25186e3931">Vietcombank</option>
-          <option>Expense</option>
-          <option>3</option>
+          {this.iosOptionRender('expense')}
+          {this.assetsOptionRender()}
         </Input>
         {this.renderError(meta)}
       </FormGroup>
@@ -287,10 +310,13 @@ const validate = formValues => {
 
 const mapStateToProps = state => {
   return {
+    ios: state.ios,
+    assets: state.assets,
+    currentFarm: state.currentFarm,
     recurringMode: state.displayMode.recurringMode
   };
 };
 export default reduxForm({
   form: 'record',
   validate: validate
-})(connect(mapStateToProps, { toggleRecurring, createTransaction })(RecordCard));
+})(connect(mapStateToProps, { toggleRecurring, createTransaction, fetchTransactions,fetchIOs, fetchAssets })(RecordCard));
