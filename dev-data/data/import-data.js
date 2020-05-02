@@ -56,7 +56,7 @@ const deleteData = async () => {
   try {
     // await IO.deleteMany();
     // await Asset.deleteMany();
-    // await Account.deleteMany();
+    await Account.deleteMany();
     // await User.deleteMany();
     // await Farm.deleteMany();
     await Transaction.deleteMany();

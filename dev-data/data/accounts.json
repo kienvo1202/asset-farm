@@ -26,6 +26,12 @@
   {
     "farm": "5de608e532c37a25186e3931",
     "type": "expense",
+    "name": "Food - Eat Out",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
     "name": "Clothing",
     "nativeDebitCredit": true
   },
@@ -44,7 +50,7 @@
   {
     "farm": "5de608e532c37a25186e3931",
     "type": "expense",
-    "name": "Household Goods",
+    "name": "Utilities, Household",
     "nativeDebitCredit": true
   },
   {
@@ -74,6 +80,12 @@
   {
     "farm": "5de608e532c37a25186e3931",
     "type": "expense",
+    "name": "Giving",
+    "nativeDebitCredit": true
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "expense",
     "name": "Other",
     "nativeDebitCredit": true
   },
@@ -81,7 +93,7 @@
     "farm": "5de608e532c37a25186e3931",
     "type": "cash",
     "name": "Cash",
-    "meanGrowth": 0,
+    "initializedBalance": 0,
     "nativeDebitCredit": true
   }
 ]

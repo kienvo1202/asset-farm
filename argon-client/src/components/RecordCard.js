@@ -10,6 +10,7 @@ import {
   Progress,
   Table,
   Container,
+  Label,
   Row,
   Col,
   FormGroup,
@@ -17,21 +18,38 @@ import {
   Input
 } from 'reactstrap';
 
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm,formValueSelector  } from 'redux-form';
 import { connect } from 'react-redux';
-import { toggleRecurring, createTransaction, fetchTransactions, fetchIOs, fetchAssets } from '../actions/';
-import formatDate from '../utils/helper';
+import {
+  toggleRecurring,
+  createTransaction,
+  fetchTransactions,
+  fetchIOs,
+  fetchAssets,
+  loadFormValues
+} from '../actions/';
 
 class RecordCard extends React.Component {
-  componentDidMount() {
-    console.log(this.props.currentFarm)
-    this.props.fetchIOs(this.props.currentFarm)
-    this.props.fetchAssets(this.props.currentFarm)
-    
+  async componentDidMount() {
+    await this.props.fetchIOs(this.props.currentFarm);
+    await this.props.fetchAssets(this.props.currentFarm);
+    this.props.loadFormValues({
+      transactionDate: new Date().toISOString().split('T')[0],
+      amount: 50000,
+      from: Object.values(this.props.ios)[0]._id,
+      to: Object.values(this.props.assets)[0]._id
+    });
+  }
+  componentWillUnmount() {
+    this.props.loadFormValues({
+      transactionDate: null,
+      amount: null,
+      from: null,
+      to: null
+    });
   }
 
   onSubmit = async formValues => {
-    console.log(formValues);
     const transactions = {
       farm: this.props.currentFarm,
       transactionNo: 12,
@@ -42,8 +60,9 @@ class RecordCard extends React.Component {
       descriptionFree: formValues.description,
       effectiveDate: formValues.transactionDate
     };
+    console.log(formValues,transactions);
     await this.props.createTransaction(transactions);
-    await this.props.fetchTransactions(); //re-fetch to fill from, to ....
+    await this.props.fetchTransactions(this.props.currentFarm); //re-fetch to fill from, to ....
   };
 
   renderError = ({ error, submitFailed }) => {
@@ -68,7 +87,7 @@ class RecordCard extends React.Component {
     );
   };
   renderAmount = ({ input, meta }) => {
-    console.log(meta);
+    
     return (
       <FormGroup>
         <label className="form-control-label">Amount</label>
@@ -81,9 +100,9 @@ class RecordCard extends React.Component {
   renderDescription = ({ input, meta }) => {
     return (
       <FormGroup>
-        <label className="form-control-label" htmlFor="input-description">
+        <Label className="form-control-label" htmlFor="input-description">
           Description
-        </label>
+        </Label>
         <Input
           className="form-control-alternative"
           id="input-description"
@@ -114,19 +133,23 @@ class RecordCard extends React.Component {
   };
 
   iosOptionRender = ioName => {
-    const data = this.props.ios.filter(e => e.type === ioName);
+    const data = Object.values(this.props.ios).filter(e => e.type === ioName);
     const rows = data.map(e => {
       return (
-      <option value={e._id}>{e.type} - {e.name}</option>
+        <option value={e._id}>
+          {e.type} - {e.name}
+        </option>
       );
     });
     return rows;
   };
   assetsOptionRender = () => {
-    const data = this.props.assets
+    const data = Object.values(this.props.assets);
     const rows = data.map(e => {
       return (
-      <option value={e._id}>{e.type} - {e.name}</option>
+        <option value={e._id}>
+          {e.type} - {e.name}
+        </option>
       );
     });
     return rows;
@@ -196,6 +219,7 @@ class RecordCard extends React.Component {
           <option>3</option>
           <option>4</option>
           <option>5</option>
+          <option>6</option>
         </Input>
       </FormGroup>
     );
@@ -313,10 +337,22 @@ const mapStateToProps = state => {
     ios: state.ios,
     assets: state.assets,
     currentFarm: state.currentFarm,
-    recurringMode: state.displayMode.recurringMode
+    recurringMode: state.displayMode.recurringMode,
+    initialValues: state.loadForm.values
   };
 };
-export default reduxForm({
+
+const aForm = reduxForm({
   form: 'record',
-  validate: validate
-})(connect(mapStateToProps, { toggleRecurring, createTransaction, fetchTransactions,fetchIOs, fetchAssets })(RecordCard));
+  validate: validate,
+  enableReinitialize: true
+})(RecordCard);
+
+export default connect(mapStateToProps, {
+  toggleRecurring,
+  createTransaction,
+  fetchTransactions,
+  fetchIOs,
+  fetchAssets,
+  loadFormValues
+})(aForm);

@@ -30,7 +30,7 @@ class BudgetCard extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.fetchAssets();
+    this.props.fetchAssets(this.props.currentFarm);
   }
   iosRowRender = ioName => {
     const data = this.props.ios.filter(e => e.type === ioName);
@@ -88,7 +88,8 @@ const mapStateToProps = state => {
   return {
     ios: state.ios,
     assets: state.assets,
-    transactions: state.transactions
+    transactions: state.transactions,
+    currentFarm: state.currentFarm
   };
 };
 

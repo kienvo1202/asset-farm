@@ -21,7 +21,6 @@ import { fetchTransactions } from '../actions';
 
 class TransactionCard extends React.Component {
   componentDidMount() {
-    console.log("Trans Card",this.props.currentFarm)
     this.props.fetchTransactions(this.props.currentFarm);
   }
 
@@ -60,7 +59,7 @@ class TransactionCard extends React.Component {
           <Row className="align-items-center">
             <div className="col">
               <h2 className="mb-0">
-                Transactions <i class="fas fa-list-ul"></i>
+                Transactions <i className="fas fa-list-ul"></i>
               </h2>
             </div>
             <div className="col text-right">
