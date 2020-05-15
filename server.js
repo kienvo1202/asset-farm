@@ -25,7 +25,7 @@ mongoose
   .catch(console.log('oh crap ...'));
 
 const app = require('./app');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 app.listen(port, function() {
   console.log('App started at ', port);

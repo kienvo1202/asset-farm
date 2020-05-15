@@ -28,7 +28,7 @@ class TransactionCard extends React.Component {
     //console.log(Object.values(this.props.transactions))
     const rows = Object.values(this.props.transactions)
       .sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0))
-      .slice(0,20)
+      .slice(0,25)
       .map(e => {
         return (
           <tr>
@@ -69,7 +69,7 @@ class TransactionCard extends React.Component {
             </div>
           </Row>
         </CardHeader>
-        <Table className="align-items-center table-flush" responsive>
+        <Table className="align-items-center table-flush" responsive size="sm">
           <thead className="thead-light">
             <tr>
               <th scope="col">Transaction Date</th>

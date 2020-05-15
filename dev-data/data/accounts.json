@@ -14,6 +14,12 @@
   {
     "farm": "5de608e532c37a25186e3931",
     "type": "income",
+    "name": "Investment",
+    "nativeDebitCredit": false
+  },
+  {
+    "farm": "5de608e532c37a25186e3931",
+    "type": "income",
     "name": "Other",
     "nativeDebitCredit": false
   },

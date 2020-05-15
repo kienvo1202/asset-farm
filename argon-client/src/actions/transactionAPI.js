@@ -9,7 +9,7 @@ export const fetchTransactions = (farmId) => {
 export const fetchTransaction = (id) => {
     return async function(dispatch, getState) {
         const response = await axios.get(`/api/v1/transactions/${id}`);
-        dispatch({type: 'FETCH_TRANSACTION', payload: response.data.data.docs})
+        dispatch({type: 'FETCH_TRANSACTION', payload: response.data.data.doc})
     }
 }
 export const createTransaction = (formValues) => {
@@ -22,7 +22,7 @@ export const createTransaction = (formValues) => {
 export const editTransaction = (id, formValues) => {
     return async function(dispatch, getState) {
         const response = await axios.patch(`/api/v1/transactions/${id}`,formValues);
-        dispatch({type: 'EDIT_TRANSACTION', payload: response.data.data.docs})
+        dispatch({type: 'EDIT_TRANSACTION', payload: response.data.data.doc})
     }
 }
 export const deleteTransaction = (id) => {

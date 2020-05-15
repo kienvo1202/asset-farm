@@ -36,13 +36,7 @@ class Auth extends React.Component {
   getRoutes = routes => {
     return routes.map((prop, key) => {
       if (prop.layout === '/auth') {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
+        return <Route path={prop.layout + prop.path} component={prop.component} key={key} />;
       } else {
         return null;
       }
@@ -60,14 +54,16 @@ class Auth extends React.Component {
                   <Col lg="5" md="6">
                     <h1 className="text-white text-left">Asset Farm</h1>
                     <h3 className="text-white text-left">
-                      An overkill tool to manage personal finance
+                      An overkill and unnecessary tool to manage your money.
                     </h3>
                     <p className="text-lead text-white text-left">
-                      Things you can do 1. Manage income and expense, 2.
-                      Benchmark against budget 3. Monitor net earnings and
-                      assets accumulation 3. Allocate asset types and simulate
-                      investment returns 4. Find the most suited financial
-                      products
+                      Here you can:
+                      <ol>
+                        <li>Use AI tech to record cash flows</li>
+                        <li>Use AI tech to monitor expenses and assets</li>
+                        <li>Use AI tech to make future financial plans</li>
+                        <li>Use AI tech to find suitable financial products</li>
+                      </ol>
                     </p>
                   </Col>
                 </Row>
@@ -82,15 +78,13 @@ class Auth extends React.Component {
                 x="0"
                 y="0"
               >
-                <polygon
-                  className="fill-default"
-                  points="2560 0 2560 100 0 100"
-                />
+                <polygon className="fill-default" points="2560 0 2560 100 0 100" />
               </svg>
             </div>
           </div>
           {/* Page content */}
           <Container className="mt--8 pb-5">
+            123
             <Row className="justify-content-center">
               <Switch>{this.getRoutes(routes)}</Switch>
             </Row>

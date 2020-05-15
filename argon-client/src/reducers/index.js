@@ -17,11 +17,13 @@ const exampleSelectReducer = (select = null, action) => {
 
   return select;
 };
-const displayMode = { recurringMode: false, quickEditMode: false };
+const displayMode = { recurringMode: false, quickEditMode: false, mountAssetCardId: 0 };
 const recordDisplayModeReducer = (mode = displayMode, action) => {
   switch (action.type) {
     case 'RECURRING_TOGGLE':
       return { ...mode, recurringMode: action.payload };
+    case 'MOUNT_ASSET_CARD':
+      return { ...mode, mountAssetCardId: mode.mountAssetCardId + 1 };
     default:
       return mode;
   }
@@ -50,7 +52,7 @@ const currentReducer = (data = {}, action) => {
 const transactionsReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_TRANSACTIONS':
-      return { ...data, ..._.mapKeys(action.payload, '_id') };
+      return { ..._.mapKeys(action.payload, '_id') };
     case 'FETCH_TRANSACTION':
       return { ...data, [action.payload._id]: action.payload };
     case 'CREATE_TRANSACTION':
@@ -64,10 +66,18 @@ const transactionsReducer = (data = {}, action) => {
   }
 };
 
-const iosReducer = (data = [], action) => {
+const iosReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_IOS':
-      return action.payload;
+      return { ..._.mapKeys(action.payload, '_id') };
+    case 'FETCH_IO':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'CREATE_IO':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'EDIT_IO':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'DELETE_IO':
+      return _.omit(data, action.payload);
     default:
       return data;
   }
@@ -76,7 +86,7 @@ const iosReducer = (data = [], action) => {
 const assetsReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_ASSETS':
-      return { ...data, ..._.mapKeys(action.payload, '_id') };
+      return { ..._.mapKeys(action.payload, '_id') };
     case 'FETCH_ASSET':
       return { ...data, [action.payload._id]: action.payload };
     case 'CREATE_ASSET':
@@ -90,9 +100,22 @@ const assetsReducer = (data = {}, action) => {
   }
 };
 
+const statementReducer = (data = {}, action) => {
+  switch (action.type) {
+    case 'FETCH_INCOME_STATEMENT':
+      return { ...data, raw: action.payload };
+    case 'STORE_STATEMENT':
+      return { ...data, [action.payload.name]: action.payload.statement };
+    default:
+      return data;
+  }
+};
+
 const initialAuth = {
   isAuthLoaded: false,
   isSignedIn: null,
+  isPartnerSignedIn: null,
+  authObj: null,
   userInfo: {
     userId: null,
     email: null,
@@ -100,6 +123,12 @@ const initialAuth = {
     firstName: null,
     lastName: null,
     farms: []
+  },
+  partnerInfo: {
+    id: null,
+    name: null,
+    website: null,
+    logo: null
   }
 };
 const authReducer = (state = initialAuth, action) => {
@@ -108,6 +137,12 @@ const authReducer = (state = initialAuth, action) => {
       return { ...state, isSignedIn: true, userInfo: action.payload };
     case 'SIGN_OUT':
       return { ...state, isSignedIn: false, userInfo: initialAuth.userInfo };
+    case 'PARTNER_SIGN_IN':
+      return { ...state, isPartnerSignedIn: true, partnerInfo: {...action.payload,password:undefined} };
+    case 'PARTNER_SIGN_OUT':
+      return { ...state, isPartnerSignedIn: false, partnerInfo: initialAuth.partnerInfo };
+    case 'STORE_AUTH':
+      return { ...state, authObj: action.payload };
     case 'AUTH_UNLOAD':
       return { ...state, isAuthLoaded: false };
     case 'AUTH_LOAD':
@@ -137,5 +172,6 @@ export default combineReducers({
   assets: assetsReducer,
   auth: authReducer,
   form: formReducer,
-  loadForm: loadFormValuesReducer
+  loadForm: loadFormValuesReducer,
+  statements: statementReducer
 });

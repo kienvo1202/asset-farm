@@ -25,6 +25,7 @@ import Profile from "views/examples/Profile.jsx";
 import Maps from "views/examples/Maps.jsx";
 import Register from "views/examples/Register.jsx";
 import Login from "views/Login.jsx";
+import PartnerLogin from "views/PartnerLogin.jsx";
 import Tables from "views/examples/Tables.jsx";
 import Icons from "views/examples/Icons.jsx";
 
@@ -45,7 +46,7 @@ var routes = [
   },
   {
     path: "/asset",
-    name: "Asset",
+    name: "Assets",
     icon: "ni ni-planet text-blue",
     component: Asset,
     layout: "/admin"
@@ -70,6 +71,27 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: Login,
     layout: "/auth"
+  },
+  {
+    path: "/partner",
+    name: "Partner",
+    icon: "ni ni-key-25 text-info",
+    component: PartnerLogin,
+    layout: "/auth"
+  },
+  {
+    path: "/product",
+    name: "Product",
+    icon: "ni ni-key-25 text-info",
+    component: Icons,
+    layout: "/partner"
+  },
+  {
+    path: "/lead",
+    name: "Leads",
+    icon: "ni ni-key-25 text-info",
+    component: Icons,
+    layout: "/partner"
   }
 ];
 export default routes;

@@ -9,25 +9,25 @@ export const fetchIOs = farmId => {
 export const fetchIO = id => {
     return async function(dispatch, getState) {
       const response = await axios.get(`/api/v1/accounts/${id}`);
-      dispatch({ type: 'FETCH_IOS', payload: response.data.data.docs });
+      dispatch({ type: 'FETCH_IO', payload: response.data.data.doc });
     };
   };
   export const createIO = formValues => {
     return async function(dispatch, getState) {
       const response = await axios.post('/api/v1/accounts', formValues);
-      dispatch({ type: 'CREATE_IOS', payload: response.data.data.newDoc });
+      dispatch({ type: 'CREATE_IO', payload: response.data.data.newDoc });
     };
   };
   export const editIO = (id, formValues) => {
     return async function(dispatch, getState) {
       const response = await axios.patch(`/api/v1/accounts/${id}`, formValues);
-      dispatch({ type: 'EDIT_IOS', payload: response.data.data.docs });
+      dispatch({ type: 'EDIT_IO', payload: response.data.data.doc });
     };
   };
   export const deleteIO = id => {
     return async function(dispatch, getState) {
       const response = await axios.delete(`/api/v1/accounts/${id}`);
-      dispatch({ type: 'DELETE_IOS', payload: id });
+      dispatch({ type: 'DELETE_IO', payload: id });
     };
   };
 
@@ -40,7 +40,7 @@ export const fetchAssets = farmId => {
 export const fetchAsset = id => {
   return async function(dispatch, getState) {
     const response = await axios.get(`/api/v1/accounts/${id}`);
-    dispatch({ type: 'FETCH_ASSET', payload: response.data.data.docs });
+    dispatch({ type: 'FETCH_ASSET', payload: response.data.data.doc });
   };
 };
 export const createAsset = formValues => {
@@ -52,7 +52,7 @@ export const createAsset = formValues => {
 export const editAsset = (id, formValues) => {
   return async function(dispatch, getState) {
     const response = await axios.patch(`/api/v1/accounts/${id}`, formValues);
-    dispatch({ type: 'EDIT_ASSET', payload: response.data.data.docs });
+    dispatch({ type: 'EDIT_ASSET', payload: response.data.data.doc });
   };
 };
 export const deleteAsset = id => {

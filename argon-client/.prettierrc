@@ -1,5 +1,5 @@
 {
   "singleQuote": true,
   "editor.formatOnSave": true,
-  "printWidth": 110
+  "printWidth": 100
 }

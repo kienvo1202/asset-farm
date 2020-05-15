@@ -4,12 +4,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
   Label,
   Row,
   Col,
@@ -72,6 +66,7 @@ class RecordCard extends React.Component {
   };
 
   renderTransactionDate = ({ input, meta }) => {
+    console.log(meta)
     return (
       <FormGroup>
         <label className="form-control-label">Transaction Date</label>

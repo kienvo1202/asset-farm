@@ -16,3 +16,13 @@ export const accountTypesDefaultValues = {
   borrowing: {type:'borrowing', longType: 'Borrowing', nativeDebitCredit: false ,effectiveDate:true},
   otherLiability: {type:'otherLiability', longType: 'Other Liabilities', nativeDebitCredit: false,effectiveDate:true }
 };
+
+export const partnerCredentials = {
+  vietcapital: {id: 'vietcapital', password: 'saving123', name:'',website:'',logo:''},
+  vietcombank:{id: 'vietcombank', password: 'transactions123', name:'',website:'',logo:''},
+  vib:{id: 'vib', password: 'okk123', name:'',website:'',logo:''},
+  vinacapital:{id: 'vinacapital', password: 'goodlookingscam123', name:'',website:'',logo:''},
+  fecredit:{id: 'fecredit', password: 'shark123', name:'',website:'',logo:''},
+  aia:{id: 'aia', password: 'insurgent123', name:'',website:'',logo:''},
+  
+}

@@ -24,21 +24,21 @@ import Chart from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
+  // Button,
+  // Card,
+  // CardHeader,
+  // CardBody,
+  // NavItem,
+  // NavLink,
+  // Nav,
+  // Progress,
+  // Table,
   Container,
   Row,
   Col,
-  FormGroup,
-  Form,
-  Input
+  // FormGroup,
+  // Form,
+  // Input
 } from 'reactstrap';
 
 // core components

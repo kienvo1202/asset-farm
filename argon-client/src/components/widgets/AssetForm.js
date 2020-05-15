@@ -25,7 +25,7 @@ import {
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import axios from 'axios';
-import { fetchAssets, createAsset, editAsset, deleteAsset,loadFormValues } from '../../actions';
+import { fetchAssets, createAsset, editAsset, deleteAsset,loadFormValues,mountAssetCard } from '../../actions';
 import { accountTypesDefaultValues } from '../../utils/constants';
 
 class AssetForm extends React.Component {
@@ -36,7 +36,7 @@ class AssetForm extends React.Component {
     };
   }
   componentDidMount() {
-    //console.log('form',this.props.initialProps)
+    
     //this.props.loadFormValues(this.props.initialProps);
   }
   onSubmit = async formValues => {
@@ -60,7 +60,10 @@ class AssetForm extends React.Component {
       await this.props.editAsset(this.props.accountId, account);
     }
     
-    //await this.props.fetchAssets(this.props.currentFarm);
+    
+    // await this.props.fetchAssets(this.props.currentFarm);
+    console.log("123")
+    // this.props.mountAssetCard()
   };
 
   onDelete = async () => {
@@ -321,5 +324,6 @@ export default connect(mapStateToProps, {
   createAsset,
   editAsset,
   deleteAsset,
-  loadFormValues
+  loadFormValues,
+  mountAssetCard
 })(AssetForm);

@@ -8,11 +8,12 @@ const accountSchema = new mongoose.Schema({
   nativeDebitCredit: {type: Boolean, required: true},
   budget: { type: Number },
   liquidityScore: { type: Number },//1-1000 higher better?
-  defaultProbability: { type: Number },
-  simpleAnnualReturn: { type: Number },
-  varAnnualReturn: { type: Number },
-  term: { type: Number }, //Months
-  usefulLife: { type: Number },
+  defaultProbability: { type: Number }, // bonds/saving
+  simpleAnnualReturn: { type: Number }, // bonds/saving
+  premiumPayment: { type: Number }, // insurance
+  protectionValue: { type: Number }, // insurance  
+  term: { type: Number }, //Months, bonds/saving
+  usefulLife: { type: Number }, //toys
   income: { type: Number }, //Other income like rent?
   effectiveDate: { type: Date, default: Date.now() },
   createdAt: { type: Date, default: Date.now() },

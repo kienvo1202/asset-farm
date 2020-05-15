@@ -80,7 +80,7 @@ exports.getAll = Model =>
       .limitFields()
       .paginate();
 
-    const docs = await features.query; //interesting await a "long" promise
+    const docs = await features.query; //interesting, await a "long" promise
     // const query = Tour.find()
     //   .where('duration')
     //   .equals(5)

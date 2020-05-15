@@ -44,7 +44,7 @@ class Footer extends React.Component {
             <Nav className="nav-footer justify-content-center justify-content-xl-end">
               <NavItem>
                 <NavLink
-                  href="https://www.google.com"
+                  href="https://www.linkedin.com/in/trung-kien-vo-8170533a/"
                   rel="noopener noreferrer"
                   target="_blank"
                 >

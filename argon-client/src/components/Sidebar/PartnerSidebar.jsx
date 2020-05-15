@@ -84,7 +84,7 @@ class Sidebar extends React.Component {
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout == '/admin') {
+      if (prop.layout == '/partner') {
       return (
         <NavItem key={key}>
           <NavLink to={prop.layout + prop.path} tag={NavLinkRRD} onClick={this.closeCollapse} activeClassName="active">
@@ -120,6 +120,7 @@ class Sidebar extends React.Component {
           {/* Brand */}
           {logo ? (
             <NavbarBrand className="pt-0" {...navbarBrandProps}>
+              nabra
               <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc} />
             </NavbarBrand>
           ) : null}
@@ -199,7 +200,7 @@ class Sidebar extends React.Component {
               </Row>
             </div>
             {/* Form */}
-            <Form className="mt-4 mb-3 d-md-none">
+            {/* <Form className="mt-4 mb-3 d-md-none">
               <InputGroup className="input-group-rounded input-group-merge">
                 <Input
                   aria-label="Search"
@@ -213,14 +214,14 @@ class Sidebar extends React.Component {
                   </InputGroupText>
                 </InputGroupAddon>
               </InputGroup>
-            </Form>
+            </Form> */}
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
 
-            <hr className="my-3" />
+            {/* <hr className="my-3" />
             <GoogleAuth />
             <hr className="my-3" />
-            <DemoButton /> 
+            <DemoButton />  */}
               
 
           </Collapse>

@@ -23,13 +23,13 @@ import {
   Card,
   CardHeader,
   CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Row,
+  // FormGroup,
+  // Form,
+  // Input,
+  // InputGroupAddon,
+  // InputGroupText,
+  // InputGroup,
+  // Row,
   Col
 } from 'reactstrap';
 import GoogleAuth from '../components/widgets/GoogleAuth';
@@ -46,7 +46,7 @@ class Login extends React.Component {
               {/* <span className="btn-inner--icon">
             <img alt="..." src={require('assets/img/icons/common/google.svg')} />
           </span> */}
-              <span className="btn-inner--text">Enter The Farm!</span>
+              <span className="btn-inner--text">Enter Your Farm!</span>
             </Button>
           </div>
         </Link>
@@ -65,7 +65,7 @@ class Login extends React.Component {
       <>
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
-            <CardHeader className="bg-transparent pb-5">
+            <CardHeader className="bg-transparent">
               <div className="btn-wrapper text-center">
                 <GoogleAuth />
               </div>

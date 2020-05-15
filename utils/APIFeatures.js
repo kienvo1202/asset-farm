@@ -1,8 +1,8 @@
 // Middleware to modify query, for tourModel
 class APIFeatures {
   constructor(query, queryString) {
-    this.query = query;
-    this.queryString = queryString;
+    this.query = query; //Model.find()
+    this.queryString = queryString; //object
   }
 
   filter() {

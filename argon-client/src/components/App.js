@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import AdminLayout from 'layouts/Admin.jsx';
+import PartnerLayout from 'layouts/Partner.jsx';
 import AuthLayout from 'layouts/Auth.jsx';
 
 class App extends React.Component {
@@ -10,15 +11,16 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
-          {this.props.isSignedIn && (
+          {this.props.auth.isSignedIn && (
             <Route path="/admin" render={props => <AdminLayout {...props} />} />
           )}
-          <Route path="/auth" render={props => <AuthLayout {...props} />} />
-          {!this.props.isSignedIn ? (
-            <Redirect from="/" to="/auth/login" />
-          ) : (
-            <Redirect from="/" to="/admin/index" />
+          {this.props.auth.isPartnerSignedIn && (
+            <Route path="/partner" render={props => <PartnerLayout {...props} />} />
           )}
+          <Route path="/auth" render={props => <AuthLayout {...props} />} />
+          {!this.props.auth.isSignedIn &&
+            <Redirect from="/" to="/auth/login" />
+          }
         </Switch>
       </BrowserRouter>
     );
@@ -27,7 +29,7 @@ class App extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    isSignedIn: state.auth.isSignedIn
+    auth: state.auth
   };
 };
 

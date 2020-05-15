@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { signIn, signOut, changeCurrentFarm } from '../../actions';
+import { signIn, signOut, changeCurrentFarm,storeAuth } from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
 class GoogleAuth extends React.Component {
   componentDidMount() {
+    if (!this.props.auth.authObj) { //load gapi only once, instead of every time
     window.gapi.load('client:auth2', () => {
       window.gapi.client
         .init({
@@ -15,12 +16,17 @@ class GoogleAuth extends React.Component {
         })
         .then(() => {
           this.auth = window.gapi.auth2.getAuthInstance();
+          this.props.storeAuth(this.auth)
           //this.props.authLoad();
           this.onAuthChange(this.auth.isSignedIn.get());
           this.auth.isSignedIn.listen(this.onAuthChange);
-          console.log("Auth Component Initiation")
+          console.log("Auth Component Initiation", this.auth)
         });
-    });
+    });} else {
+      this.auth =  this.props.auth.authObj
+      this.onAuthChange(this.auth.isSignedIn.get());
+    }
+
   }
   componentWillUnmount() {
     //this.props.authUnload();
@@ -28,6 +34,7 @@ class GoogleAuth extends React.Component {
 
   
   onAuthChange = async isSignedIn => { // isSignedIn here is maybe passed on from callback of this.auth.isSignedIn.listen
+    
     if (isSignedIn) {
       //console.log('OAUTH2', isSignedIn, this.auth, 'currentUser', this.auth.currentUser.get().getBasicProfile());
       const userInfo = {
@@ -73,8 +80,7 @@ class GoogleAuth extends React.Component {
       } else {
         this.props.signIn(user.data.data.docs[0]);
       }
-      //console.log(this.props.auth.userInfo.farms[0])
-      this.props.changeCurrentFarm(this.props.auth.userInfo.farms[0])
+      this.props.changeCurrentFarm(user.data.data.docs[0].farms[0])
 
     } else {
       this.props.signOut();
@@ -117,4 +123,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, { signIn, signOut,changeCurrentFarm })(GoogleAuth));
+export default withRouter(connect(mapStateToProps, { signIn, signOut,changeCurrentFarm,storeAuth })(GoogleAuth));
