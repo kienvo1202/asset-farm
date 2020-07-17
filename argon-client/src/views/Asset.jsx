@@ -24,21 +24,22 @@ import Chart from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
 import {
-  // Button,
-  // Card,
-  // CardHeader,
-  // CardBody,
-  // NavItem,
-  // NavLink,
-  // Nav,
-  // Progress,
-  // Table,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  NavItem,
+  NavLink,
+  Nav,
+  Progress,
+  Table,
   Container,
   Row,
   Col,
-  // FormGroup,
-  // Form,
-  // Input
+  FormGroup,
+  Form,
+  Input
 } from 'reactstrap';
 
 // core components
@@ -49,8 +50,7 @@ import { connect } from 'react-redux';
 import AssetCard from '../components/AssetCard';
 
 class Asset extends React.Component {
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -60,7 +60,7 @@ class Asset extends React.Component {
         <Container className="mt--7" fluid>
           <Row>
             <Col>
-              <AssetCard key={this.props.mountAssetCardId}/>
+              <AssetCard key={this.props.mountAssetCardId} />
             </Col>
           </Row>
         </Container>
@@ -75,4 +75,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { })(Asset);
+export default connect(mapStateToProps, {})(Asset);

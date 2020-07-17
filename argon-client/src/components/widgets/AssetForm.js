@@ -51,7 +51,7 @@ class AssetForm extends React.Component {
       liquidityScore: defaultValues.liquidityScore || formValues.liquidityScore,
       effectiveDate: formValues.effectiveDate,
       usefulLife: formValues.usefulLife,
-      simpleAnnualReturn: formValues.simpleAnnualReturn,
+      simpleAnnualInterest: formValues.simpleAnnualInterest,
       term: formValues.term
     };
     if (this.props.accountId === 'newAccount') {
@@ -195,11 +195,11 @@ class AssetForm extends React.Component {
       </FormGroup>
     );
   };
-  renderFormSimpleAnnualReturn = ({ input }) => {
+  renderFormSimpleAnnualInterest = ({ input }) => {
     return (
       <FormGroup>
         <label className="form-control-label" htmlFor="input-description">
-          Return
+          Interest
         </label>
         <InputGroup className="input-group-alternative">
           <InputGroupAddon addonType="prepend">
@@ -257,9 +257,9 @@ class AssetForm extends React.Component {
             )}
 
           {this.props.assetCreationForm.advanced &&
-            this.state.assetTypes[this.props.assetCreationForm.type].simpleAnnualReturn && (
+            this.state.assetTypes[this.props.assetCreationForm.type].simpleAnnualInterest && (
               <Col xs="4">
-                <Field name="simpleAnnualReturn" component={this.renderFormSimpleAnnualReturn} />
+                <Field name="simpleAnnualInterest" component={this.renderFormSimpleAnnualInterest} />
               </Col>
             )}
           {this.props.assetCreationForm.advanced &&

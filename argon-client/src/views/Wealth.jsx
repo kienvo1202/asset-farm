@@ -24,21 +24,22 @@ import Chart from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
 import {
-  // Button,
-  // Card,
-  // CardHeader,
-  // CardBody,
-  // NavItem,
-  // NavLink,
-  // Nav,
-  // Progress,
-  // Table,
+  Button,
+  Card,
+  CardTitle,
+  CardHeader,
+  CardBody,
+  NavItem,
+  NavLink,
+  Nav,
+  Progress,
+  Table,
   Container,
   Row,
   Col,
-  // FormGroup,
-  // Form,
-  // Input
+  FormGroup,
+  Form,
+  Input
 } from 'reactstrap';
 
 // core components
@@ -60,6 +61,9 @@ class Wealth extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
+            <Col>
+              <WealthCard />
+            </Col>
             <Col>
               <WealthCard />
             </Col>

@@ -52,13 +52,6 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/budget",
-    name: "Budget & Planning",
-    icon: "ni ni-planet text-blue",
-    component: Budget,
-    layout: "/admin"
-  },
-  {
     path: "/wealth",
     name: "Wealth Planning",
     icon: "ni ni-single-02 text-yellow",

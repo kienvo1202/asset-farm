@@ -12,7 +12,7 @@ import {
   Input
 } from 'reactstrap';
 
-import { Field, reduxForm,formValueSelector  } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 import {
   toggleRecurring,
@@ -20,18 +20,25 @@ import {
   fetchTransactions,
   fetchIOs,
   fetchAssets,
+  fetchIncomeStatement,
   loadFormValues
 } from '../actions/';
 
+import { accountTypesDefaultValues } from '../utils/constants';
+
 class RecordCard extends React.Component {
-  async componentDidMount() {
-    await this.props.fetchIOs(this.props.currentFarm);
-    await this.props.fetchAssets(this.props.currentFarm);
+   componentDidMount() {
+    this.props.fetchIOs(this.props.currentFarm);
+    this.props.fetchAssets(this.props.currentFarm)
+    this.props.fetchIncomeStatement(this.props.currentFarm);
+
+    const defaultSelection = Object.values(this.props.assets)[0] || {id:"_not_ready"}
+
     this.props.loadFormValues({
       transactionDate: new Date().toISOString().split('T')[0],
-      amount: 50000,
-      from: Object.values(this.props.ios)[0]._id,
-      to: Object.values(this.props.assets)[0]._id
+      amount: 100000,
+      from: defaultSelection._id,
+      to: defaultSelection._id
     });
   }
   componentWillUnmount() {
@@ -54,9 +61,9 @@ class RecordCard extends React.Component {
       descriptionFree: formValues.description,
       effectiveDate: formValues.transactionDate
     };
-    console.log(formValues,transactions);
+    //console.log(formValues, transactions);
     await this.props.createTransaction(transactions);
-    await this.props.fetchTransactions(this.props.currentFarm); //re-fetch to fill from, to ....
+    // await this.props.fetchTransactions(this.props.currentFarm); //re-fetch for display
   };
 
   renderError = ({ error, submitFailed }) => {
@@ -66,7 +73,7 @@ class RecordCard extends React.Component {
   };
 
   renderTransactionDate = ({ input, meta }) => {
-    console.log(meta)
+    //console.log(meta);
     return (
       <FormGroup>
         <label className="form-control-label">Transaction Date</label>
@@ -82,11 +89,16 @@ class RecordCard extends React.Component {
     );
   };
   renderAmount = ({ input, meta }) => {
-    
     return (
       <FormGroup>
         <label className="form-control-label">Amount</label>
-        <Input className="form-control-alternative" id="amount" placeholder={1000} type="number" {...input} />
+        <Input
+          className="form-control-alternative"
+          id="amount"
+          placeholder={1000}
+          type="number"
+          {...input}
+        />
         {this.renderError(meta)}
       </FormGroup>
     );
@@ -139,7 +151,14 @@ class RecordCard extends React.Component {
     return rows;
   };
   assetsOptionRender = () => {
-    const data = Object.values(this.props.assets);
+    const data = Object.values(this.props.assets).sort((a, b) =>
+    accountTypesDefaultValues[a.type].sort > accountTypesDefaultValues[b.type].sort
+        ? 1
+        : b.createdAt > a.createdAt
+        ? -1
+        : 0
+    );
+    
     const rows = data.map(e => {
       return (
         <option value={e._id}>
@@ -262,7 +281,7 @@ class RecordCard extends React.Component {
                 </Col>
               </Row>
 
-              <hr className="my-4" />
+              <hr className="my-2" />
               {/* <h6 className="heading-small text-muted mb-4">
                 Recurring
               </h6> */}
@@ -296,7 +315,9 @@ class RecordCard extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Button color="primary">Submit</Button>
+                <Col>
+                  <Button color="primary">Submit</Button>
+                </Col>
               </Row>
             </div>
           </Form>
@@ -349,5 +370,6 @@ export default connect(mapStateToProps, {
   fetchTransactions,
   fetchIOs,
   fetchAssets,
+  fetchIncomeStatement,
   loadFormValues
 })(aForm);

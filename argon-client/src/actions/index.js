@@ -80,6 +80,7 @@ export const fetchIncomeStatement = farmId => {
     dispatch({ type: 'FETCH_INCOME_STATEMENT', payload: response.data.data.flat });
   };
 };
+
 export const storeStatements = statement => {
   return {
     type: 'STORE_STATEMENT',

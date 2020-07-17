@@ -256,16 +256,16 @@ function chartOptions() {
       borderDash: [2],
       borderDashOffset: [2],
       color: mode === "dark" ? colors.gray[900] : colors.gray[300],
-      drawBorder: false,
-      drawTicks: false,
-      lineWidth: 0,
-      zeroLineWidth: 0,
+      // drawBorder: false,
+      // drawTicks: false,
+      // lineWidth: 0,
+      // zeroLineWidth: 0,
       zeroLineColor: mode === "dark" ? colors.gray[900] : colors.gray[300],
       zeroLineBorderDash: [2],
       zeroLineBorderDashOffset: [2]
     },
     ticks: {
-      beginAtZero: true,
+      // beginAtZero: true,
       padding: 10,
       callback: function(value) {
         if (!(value % 10)) {

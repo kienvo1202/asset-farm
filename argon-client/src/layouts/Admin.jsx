@@ -25,8 +25,24 @@ import AdminFooter from "components/Footers/AdminFooter.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import routes from "routes.js";
+import { connect } from 'react-redux';
+import {
+  fetchTransactions,
+  fetchIOs,
+  fetchAssets,
+  fetchIncomeStatement,
+  storeStatements,
+  loadFormValues
+} from '../actions';
 
 class Admin extends React.Component {
+  async componentDidMount() {
+    // await this.props.fetchIOs(this.props.currentFarm);
+    // await this.props.fetchAssets(this.props.currentFarm);
+    // await this.props.fetchIncomeStatement(this.props.currentFarm);
+    // this.props.fetchTransactions(this.props.currentFarm);
+    
+  }
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -85,5 +101,24 @@ class Admin extends React.Component {
     );
   }
 }
+
+// const mapStateToProps = state => {
+//   return {
+//     ios: state.ios,
+//     assets: state.assets,
+//     transactions: state.transactions,
+//     statements: state.statements,
+//     currentFarm: state.currentFarm
+//   };
+// };
+
+// export default connect(mapStateToProps, {
+//   fetchTransactions,
+//   fetchIOs,
+//   fetchAssets,
+//   fetchIncomeStatement,
+//   storeStatements,
+//   loadFormValues
+// })(Admin);
 
 export default Admin;

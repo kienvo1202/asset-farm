@@ -20,13 +20,7 @@ import {
 import _ from 'lodash';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import {
-  fetchTransactions,
-  fetchIOs,
-  fetchAssets,
-  fetchIncomeStatement,
-  storeStatements
-} from '../actions';
+import { fetchIOs, fetchAssets, fetchIncomeStatement, storeStatements } from '../actions';
 
 class IOCard extends React.Component {
   constructor() {
@@ -37,65 +31,91 @@ class IOCard extends React.Component {
     };
   }
   async componentDidMount() {
-    await this.props.fetchIOs(this.props.currentFarm);
-    //await this.props.fetchAssets(this.props.currentFarm);
-    await this.props.fetchIncomeStatement(this.props.currentFarm);
-    this.standardizeIncomeStatement();
+    // await this.props.fetchIOs(this.props.currentFarm);
+    // await this.props.fetchIncomeStatement(this.props.currentFarm);
+    this.calculateIncomeStatement();
   }
 
-  setPeriod = () => {
-    const displayMonth = [...Array(this.state.period).keys()].map(period => {
-      const d = new Date(new Date().getFullYear(), new Date().getMonth() - period, 1);
-      return { year: d.getFullYear(), month: d.getMonth() + 1 };
-    });
-    //this.setState({displayMonth})
+  calculateMonthlyNetFlow = (account, flatStatement, date) => {
+    const res = {}
+    const subset = flatStatement.filter(
+      e => e.account === account._id && e.month === date.getMonth() + 1 && e.year === date.getFullYear()
+    );
+    res.totalDebit = subset[0] ? subset[0].totalDebit || 0 : 0
+    res.totalCredit = subset[0] ? subset[0].totalCredit || 0 : 0
+    res.net = res.totalDebit - res.totalCredit
+    return res
   };
 
-  standardizeIncomeStatement = async () => {
-    const statement = {};
-    //const flatStatement =  await axios.get(`/api/v1/transactions/ios?farm=${this.props.currentFarm}`) //this.props.incomeStatement.raw;
-    const rawStatement = this.props.statements.raw.reduce((c, v) => {
-      const a = v.account;
-      const y = v.year;
-      const m = v.month;
-      c[a] = c[a] || {};
-      c[a][y] = c[a][y] || {};
-      c[a][y][m] = c[a][y][m] || {};
-      c[a][y][m].totalDebit = c[a][y][m].totalDebit || v.totalDebit || 0;
-      c[a][y][m].totalCredit = c[a][y][m].totalCredit || v.totalCredit || 0;
-      c[a][y][m].net = c[a][y][m].totalDebit - c[a][y][m].totalCredit;
-      return c;
-    }, {});
+  //get months with decent transactions for averaging 
+  calculateSignificantMonths = async () => {
+    const countMonthlyTransaction = await axios.get(
+      `/api/v1/transactions/stats/monthlyTransactions?farm=${this.props.currentFarm}`
+    );
 
+    const countDistribution = countMonthlyTransaction.data.data
+      .filter(e => new Date(e._id) <= new Date())
+      .map(e => e.countTransaction);
+
+    //Math calculations for mean,std
+    const n = countDistribution.length;
+    const mean = countDistribution.reduce((a, b) => a + b) / n;
+    const s = Math.sqrt(
+      countDistribution.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n
+    );
+
+    const res = countMonthlyTransaction.data.data
+      .filter(e => e.countTransaction >= mean - s)
+      .map(e => e._id)
+      .slice(0,6); //last 12 motnhs
+    
+    return res;
+  };
+
+  calculateAverageFlow= async (account, flatStatement,months ) => {
+    const res = _.mean(months.map(m => this.calculateMonthlyNetFlow(account, flatStatement, new Date(m)).net))
+    return res
+  }
+
+  calculateIncomeStatement = async () => {
+    const statement = {};
+    const months = await this.calculateSignificantMonths()
+
+    //Transform into Nested object: accountId - year - month - {}, has all months
+    // const rawStatement = this.props.statements.raw.reduce((c, v) => {
+    //   const a = v.account;
+    //   const y = v.year;
+    //   const m = v.month;
+    //   c[a] = c[a] || {};
+    //   c[a][y] = c[a][y] || {};
+    //   c[a][y][m] = c[a][y][m] || {};
+    //   c[a][y][m].totalDebit = c[a][y][m].totalDebit || v.totalDebit || 0;
+    //   c[a][y][m].totalCredit = c[a][y][m].totalCredit || v.totalCredit || 0;
+    //   c[a][y][m].net = c[a][y][m].totalDebit - c[a][y][m].totalCredit;
+    //   return c;
+    // });
+    // console.log('rawStatementIO', rawStatement);
+
+    //----------------------------------------
+    //Prepare monthly net flow and Complete objects with 0 flow in certain months
     const data = Object.values(this.props.ios);
-    data.map(account => {
+    data.map(async (account) => {
+      const a = account._id;
       //!_.isEmpty(this.props.statements) &&
       this.state.displayMonth.map(month => {
         const d = new Date(new Date().getFullYear(), new Date().getMonth() - month, 1);
-        const a = account._id;
         const y = d.getFullYear();
         const m = d.getMonth() + 1;
 
-        // let debit = 0;
-        // let credit = 0;
-        // if (rawStatement[a][y]) {
-        //   if (rawStatement[a][y][m]) {
-        //     debit = rawStatement[a][y][m].totalDebit || 0;
-        //     credit = rawStatement[a][y][m].totalCredit || 0;
-        //   }
-        // }
-        const net = rawStatement[a][y]
-          ? rawStatement[a][y][m]
-            ? rawStatement[a][y][m].net || 0
-            : 0
-          : 0;
-        //debit - credit;
+        const net = this.calculateMonthlyNetFlow(account,this.props.statements.raw,d).net
+
+        //prepare statement
         statement[a] = statement[a] || {};
         statement[a][y] = statement[a][y] || {};
         statement[a][y][m] = statement[a][y][m] || {};
         statement[a][y][m].net = net || 0;
         //for item average
-        statement[a].total = (statement[a].total || 0) + net;
+        // statement[a].total = (statement[a].total || 0) + net;
         //calculating account monthly Grouped IO totals
         statement[account.type] = statement[account.type] || {};
         statement[account.type][y] = statement[account.type][y] || {};
@@ -103,46 +123,50 @@ class IOCard extends React.Component {
         statement[account.type][y][m].groupedTotal =
           (statement[account.type][y][m].groupedTotal || 0) + net;
         //for grouped average
-        statement[account.type].total = (statement[account.type].total || 0) + net;
+        // statement[account.type].total = (statement[account.type].total || 0) + net;
       });
-    });
 
-    this.props.storeStatements({name:'io',statement:statement});
+      //for averages
+      
+      statement[a].average = _.mean(months.map(m => this.calculateMonthlyNetFlow(account, this.props.statements.raw, new Date(m)).net))
+      statement[account.type].average = (statement[account.type].average || 0) + statement[a].average;
+      
+    });
+    this.props.storeStatements({ name: 'io', statement: statement });
   };
 
   iosRowRender = ioName => {
+    
     const data = Object.values(this.props.ios).filter(e => e.type === ioName);
-    const flows = (account) => {
-      if (_.isEmpty(this.props.statements.io)) return
-      
+    const flows = account => {
+      if (_.isEmpty(this.props.statements.io)) return;
       return (
         <>
-        <td className="text-right">
+          <td className="text-right">
             {new Intl.NumberFormat('en-US').format(
-                _.round(
-                  this.props.statements.io[account._id].total * (this.props.ios[account._id].nativeDebitCredit ? 1 : -1) /
-                    this.state.displayMonth.filter(e => e > 0).length + 0,
-                  -3
-                )
-              )}
+              _.round(
+                (this.props.statements.io[account._id].average *
+                  (this.props.ios[account._id].nativeDebitCredit ? 1 : -1)),
+                -3
+              )
+            )}
           </td>
           <td>budget</td>
           {this.state.displayMonth.map(m => {
-              const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);
-              return (
-                <td className="text-right">
-                  {new Intl.NumberFormat('en-US').format(
-                    this.props.statements.io[account._id][d.getFullYear()][
-                      d.getMonth() + 1
-                    ].net * (this.props.ios[account._id].nativeDebitCredit ? 1 : -1) + 0
-                  )}
-                </td>
-              );
-            })}
-      
-      </>)
-
-    }
+            const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);
+            return (
+              <td className="text-right">
+                {new Intl.NumberFormat('en-US').format(
+                  this.props.statements.io[account._id][d.getFullYear()][d.getMonth() + 1].net *
+                    (this.props.ios[account._id].nativeDebitCredit ? 1 : -1) +
+                    0
+                )}
+              </td>
+            );
+          })}
+        </>
+      );
+    };
     const rows = data.map(e => {
       return (
         <tr>
@@ -157,6 +181,7 @@ class IOCard extends React.Component {
   };
 
   render() {
+    console.log(this.props.statements.io)
     return (
       <Card className="shadow">
         <CardHeader className="border-0">
@@ -197,9 +222,8 @@ class IOCard extends React.Component {
               <td>
                 {!_.isEmpty(this.props.statements.io) &&
                   new Intl.NumberFormat('en-US').format(
-                    - _.round(
-                      this.props.statements.io['income'].total /
-                        this.state.displayMonth.filter(e => e > 0).length + 0,
+                    -_.round(
+                      this.props.statements.io['income'].average,
                       -3
                     )
                   )}
@@ -211,9 +235,8 @@ class IOCard extends React.Component {
                   return (
                     <td className="text-right">
                       {new Intl.NumberFormat('en-US').format(
-                        -this.props.statements.io['income'][d.getFullYear()][
-                          d.getMonth() + 1
-                        ].groupedTotal + 0
+                        -this.props.statements.io['income'][d.getFullYear()][d.getMonth() + 1]
+                          .groupedTotal + 0
                       )}
                     </td>
                   );
@@ -226,8 +249,7 @@ class IOCard extends React.Component {
                 {!_.isEmpty(this.props.statements.io) &&
                   new Intl.NumberFormat('en-US').format(
                     _.round(
-                      this.props.statements.io['expense'].total /
-                        this.state.displayMonth.filter(e => e > 0).length,
+                      this.props.statements.io['expense'].average,
                       -3
                     )
                   )}
@@ -239,9 +261,8 @@ class IOCard extends React.Component {
                   return (
                     <td className="text-right">
                       {new Intl.NumberFormat('en-US').format(
-                        this.props.statements.io['expense'][d.getFullYear()][
-                          d.getMonth() + 1
-                        ].groupedTotal
+                        this.props.statements.io['expense'][d.getFullYear()][d.getMonth() + 1]
+                          .groupedTotal
                       )}
                     </td>
                   );
@@ -266,7 +287,6 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  fetchTransactions,
   fetchIOs,
   fetchAssets,
   fetchIncomeStatement,

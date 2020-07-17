@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const accountSchema = new mongoose.Schema({
-  //ACCOUNT SPECIFIC, for INCOME,EXPENSE,ACCOUNT
-  farm: { type: mongoose.Schema.ObjectId, required: true },
-  initializedBalance: { type: Number, default: 0 },
-  budget: { type: Number },
+const accountPlanSchema = new mongoose.Schema({
+  //ACCOUNT SPECIFIC
+  //farm: { type: mongoose.Schema.ObjectId}, //referred to at farm level
+  initializedBalance: { type: Number, default: 0 }, //unnecessary but convenient to convert to account
+  
 
   // GENERIC
   partner: { type: mongoose.Schema.ObjectId }, //partner schema?
@@ -43,14 +43,14 @@ const accountSchema = new mongoose.Schema({
   gracePeriod: { type: Number }, //days
   rewardsProgram: [{ type: mongoose.Schema.ObjectId }], //rewardSchema?
 
-  income: { type: Number } //Other income like rent?
+  income: { type: Number }, //Other income like rent?
 
-  // populate with schemas: fee/fine, rewards, features
-
-  //minimumAmount	maximumAmount	loanToValue 
-  // purpose: {type: String}, //actual, simulation/plan
+  //DIFFERENCE HERE
+  priority: { type: Number }, 
+  amount: { type: Number }, 
+  fundedBy: [{type:  mongoose.Schema.ObjectId}]
 });
 
-const Account = mongoose.model('Account_1', accountSchema);
+const AccountPlan = mongoose.model('AccountPlan_01', accountPlanSchema);
 
-module.exports = Account;
+module.exports = AccountPlan;

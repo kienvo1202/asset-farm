@@ -1,8 +1,6 @@
 // app.js is for Express stuff
 const express = require('express');
 const morgan = require('morgan');
-const ioRouter = require('./routes/ioRoutes');
-const assetRouter = require('./routes/assetRoutes');
 const accountRouter = require('./routes/accountRoutes');
 const transactionRouter = require('./routes/transactionRoutes');
 const userRouter = require('./routes/userRoutes');

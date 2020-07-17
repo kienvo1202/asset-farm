@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: [true, 'Must have name'] },
   //generalType: { type: String, required: [true, 'Must have asset type']},
   type: { type: String, required: [true, 'Must have asset type'] },
-  //subType: { type: String, required: [true, 'Must have asset type']},
+  subType: { type: String, required: [true, 'Must have asset type']},
   minimumBalance: { type: Number }, //cash, saving
   nativeDebitCredit: { type: Boolean, required: true },
   liquidityScore: { type: Number }, //1-1000 higher better?
