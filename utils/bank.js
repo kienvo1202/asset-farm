@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const runService = async () => {
 
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         slowMo: 400
     });
     const page = await browser.newPage();
