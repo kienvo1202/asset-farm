@@ -19,7 +19,6 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchTransactions, deleteTransaction } from '../actions';
-import '../assets/css/alter-layer.css';
 
 class TransactionCard extends React.Component {
   constructor() {
