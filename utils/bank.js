@@ -4,7 +4,8 @@ const runService = async () => {
 
     const browser = await puppeteer.launch({
         headless: true,
-        slowMo: 400
+        slowMo: 400,
+        args:['--no-sandbox']
     });
     const page = await browser.newPage();
 
