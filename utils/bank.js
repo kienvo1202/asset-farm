@@ -11,7 +11,7 @@ const runService = async () => {
 
     const url = 'https://vcbdigibank.vietcombank.com.vn/';
     await page.goto(url);
-    await page.screenshot({path:'public/example1vcb.png'})
+    await page.screenshot({path:'argon-client/src/assets/img/brand/example1vcb.png'})
     // OUR WEB SCRAPPING CODE GOES HERE
 
     await browser.close();
