@@ -27,9 +27,12 @@ app.use('/api/v1/products', productRouter);
 app.use('/api/v1/productRequests', productRequestRouter);
 
 //serve static
-app.use(express.static('build'));
+app.use('/public', express.static('public'))
+app.use(express.static('argon-client/build'));
+
+
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'argon-client/build', 'index.html'));
 });
 
 module.exports = app;
