@@ -1,0 +1,6 @@
+runtime: nodejs10
+
+service: farm-backyard-backend
+
+includes:
+    - env_vars.yaml
