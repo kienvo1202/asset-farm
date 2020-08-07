@@ -8,7 +8,7 @@ const factory = require('./handlerFactory');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
-const testBank = require('../utils/bank')
+const testBank = require('../utils/bank.js')
 
 // const multer = require('multer');
 // const sharp = require('sharp');
@@ -125,7 +125,7 @@ exports.getIOs = catchAsync(async (req, res, next) => {
 
 exports.getStatsTransaction = catchAsync(async (req, res, next) => {
   console.log('stats', req.query);
-  testBank();
+  // testBank();
   req.query.farm = req.query.farm || '5de608e532c37a25186e3911'; //demo farm
 
   const aggre = await Transaction.aggregate([

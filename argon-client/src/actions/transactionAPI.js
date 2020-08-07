@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-export const fetchTransactions = (farmId) => {
+export const fetchTransactions = (farmId, count) => {
     return async function(dispatch, getState) {
-        const response = await axios.get(`/api/v1/transactions?farm=${farmId}&limit=100`);
+        const response = await axios.get(`/api/v1/transactions?farm=${farmId}&limit=${count}`);
         dispatch({type: 'FETCH_TRANSACTIONS', payload: response.data.data.docs})
     }
 }

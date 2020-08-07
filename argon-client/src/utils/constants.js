@@ -15,7 +15,8 @@ export const accountTypesDefaultValues = {
   otherAsset: {type:'otherAsset', longType: 'Other Assets', nativeDebitCredit: true,liquidityScore: 300 ,effectiveDate:true,sort:65},
   creditCard: {type:'creditCard', longType: 'Credit Card', nativeDebitCredit: false ,effectiveDate:true,sort:70},
   borrowing: {type:'borrowing', longType: 'Borrowing', nativeDebitCredit: false ,effectiveDate:true,sort:75},
-  otherLiability: {type:'otherLiability', longType: 'Other Liabilities', nativeDebitCredit: false,effectiveDate:true ,sort:80}
+  otherLiability: {type:'otherLiability', longType: 'Other Liabilities', nativeDebitCredit: false,effectiveDate:true ,sort:80},
+  mixed: {type:'mixed', longType: 'Mixed', nativeDebitCredit: false,effectiveDate:true ,sort:90}
 };
 
 export const partnerCredentials = {

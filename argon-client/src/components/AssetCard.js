@@ -31,7 +31,6 @@ class AssetCard extends React.Component {
     // await this.props.fetchAssets(this.props.currentFarm);
     // await this.props.fetchIncomeStatement(this.props.currentFarm);
     this.prepareBalanceSheet();
-    console.log("mount")
   }
   // async componentDidUpdate() {
   //   await this.props.fetchAssets(this.props.currentFarm);
@@ -41,7 +40,8 @@ class AssetCard extends React.Component {
   // }
 
   toggleModal = state => {
-    console.log(this.state)
+    console.log("asset modal toggle",state,this.state)
+    
     this.prepareBalanceSheet();
     this.setState({
       [state]: !this.state[state]
@@ -55,6 +55,7 @@ class AssetCard extends React.Component {
     // console.log('3', this.state.assetTypes[this.props.assetCreationForm.type]);
     //console.log('4',this.props);
     //console.log('button modal',initialProps)
+    console.log("render",accountId)
     return (
       <>
         <Button
@@ -84,7 +85,7 @@ class AssetCard extends React.Component {
                 <div className="text-center text-muted mb-4">
                   <small>{accountId === 'newAccount' ? 'Create new asset!' : 'Edit asset'}</small>
                 </div>
-                <AssetForm accountId={accountId} />
+                <AssetForm accountId={accountId} onSubmitFunction={() => {this.toggleModal(accountId)}}/>
               </CardBody>
             </Card>
           </div>
@@ -109,7 +110,6 @@ class AssetCard extends React.Component {
   }
 
   prepareBalanceSheet = () => {
-    console.log("cal balance sheet")
     const startTime = Date.now();
     const balanceSheet = {};
     const flatStatement = this.props.statements.raw;
@@ -130,16 +130,23 @@ class AssetCard extends React.Component {
         balanceSheet[account.type] = balanceSheet[account.type] || {};
         balanceSheet[account.type][y] = balanceSheet[account.type][y] || {};
         balanceSheet[account.type][y][m] = balanceSheet[account.type][y][m] || {};
-        balanceSheet[account.type][y][m].total =
-          (balanceSheet[account.type][y][m].total || 0) + balanceSheet[a][y][m].balance;
-        // console.log(account.name,a,y,m,net, debit,credit)
+        balanceSheet[account.type][y][m].balance =
+          (balanceSheet[account.type][y][m].balance || 0) + balanceSheet[a][y][m].balance;
+        
+        ////accumulating monthly NET asset
+        balanceSheet.net = balanceSheet.net || {};
+        balanceSheet.net[y] = balanceSheet.net[y] || {};
+        balanceSheet.net[y][m] = balanceSheet.net[y][m] || {};
+        balanceSheet.net[y][m].balance =
+          (balanceSheet.net[y][m].balance || 0) + balanceSheet[a][y][m].balance;
+
       });
       // console.log("test balance formula",account.name,
       // this.calculateMonthlyAccountBalance(account,flatStatement, 
       //   new Date(new Date().getFullYear(), 11, 2)))
     });
     this.props.storeStatements({ name: 'assets', statement: balanceSheet });
-    console.log(balanceSheet, Date.now() - startTime);
+    //console.log(balanceSheet, Date.now() - startTime);
   };
 
   assetsRowRender = assetName => {
@@ -172,14 +179,14 @@ class AssetCard extends React.Component {
                 </div>
               </Row>
             </td>
-            {this.renderMonthly(account._id,'balance')}
+            {this.renderMonthly(account._id)}
           </tr>
         );
       });
     return rows;
   };
 
-  renderMonthly = (asset,type) => {
+  renderMonthly = (asset) => {
     if (_.isEmpty(this.props.statements.assets)) return 
 
     const balances = this.state.displayMonth.map(m => {
@@ -187,7 +194,7 @@ class AssetCard extends React.Component {
       return (
         <td className="text-right">
           {new Intl.NumberFormat('en-US').format(
-            this.accessMonthly(asset,d.getFullYear(),d.getMonth() + 1,type)
+            this.accessMonthly(asset,d.getFullYear(),d.getMonth() + 1)
           )}
         </td>
       );
@@ -195,12 +202,12 @@ class AssetCard extends React.Component {
     return balances;
   }
   
-  accessMonthly = (asset,y,m,type) => {
+  accessMonthly = (asset,y,m) => {
     if (!this.props.statements.assets[asset]) return 0
     if (!this.props.statements.assets[asset][y]) return 0
     if (!this.props.statements.assets[asset][y][m]) return 0
 
-    return (this.props.statements.assets[asset][y][m][type] || 0)
+    return (this.props.statements.assets[asset][y][m].balance || 0)
   }
 
   render() {
@@ -214,7 +221,7 @@ class AssetCard extends React.Component {
             <div className="col text-right">
               <h4>Net worth 132,123,421</h4>
               <Button color="primary" href="#pablo" onClick={e => e.preventDefault()} size="sm">
-                See all
+                Expand/Collapse
               </Button>
             </div>
           </Row>
@@ -253,6 +260,12 @@ class AssetCard extends React.Component {
             </tr>
           </thead>
           <tbody>
+          <tr>
+              <th scope="row">
+                TOTAL WEALTH
+              </th>
+              {this.renderMonthly('net')}
+            </tr>
             <tr>
               <th scope="row">
                 Cash
@@ -261,7 +274,7 @@ class AssetCard extends React.Component {
                   <div className="col-4 text-right">{this.accountCreationModal('cash')}</div>
                 </Row> */}
               </th>
-              {this.renderMonthly('cash','total')}
+              {this.renderMonthly('cash')}
             </tr>
             {this.assetsRowRender('cash')}
             <tr>
@@ -272,7 +285,7 @@ class AssetCard extends React.Component {
                   <div className="col-4 text-right">{this.accountCreationModal('saving')}</div>
                 </Row> */}
               </th>
-              {this.renderMonthly('saving','total')}
+              {this.renderMonthly('saving')}
             </tr>
             {this.assetsRowRender('saving')}
             <tr>
@@ -283,8 +296,8 @@ class AssetCard extends React.Component {
                   return (
                     <td className="text-right">
                       {new Intl.NumberFormat('en-US').format(
-                        this.accessMonthly('bond',d.getFullYear(),d.getMonth() + 1,'total') +
-                        this.accessMonthly('stock',d.getFullYear(),d.getMonth() + 1,'total')
+                        this.accessMonthly('bond',d.getFullYear(),d.getMonth() + 1) +
+                        this.accessMonthly('stock',d.getFullYear(),d.getMonth() + 1)
                       )}
                     </td>
                   );
@@ -294,57 +307,57 @@ class AssetCard extends React.Component {
             {this.assetsRowRender('stock')}
             <tr>
               <th scope="row">Gold</th>
-              {this.renderMonthly('gold','total')}
+              {this.renderMonthly('gold')}
             </tr>
             {this.assetsRowRender('gold')}
             <tr>
               <th scope="row">Insurance</th>
-              {this.renderMonthly('insurance','total')}
+              {this.renderMonthly('insurance')}
             </tr>
             {this.assetsRowRender('insurance')}
             <tr>
               <th scope="row">Real Estates</th>
-              {this.renderMonthly('realEstates','total')}
+              {this.renderMonthly('realEstates')}
             </tr>
             {this.assetsRowRender('realEstates')}
             <tr>
               <th scope="row">High-Risk Assets</th>
-              {this.renderMonthly('risky','total')}
+              {this.renderMonthly('risky')}
             </tr>
             {this.assetsRowRender('risky')}
             <tr>
               <th scope="row">Toy</th>
-              {this.renderMonthly('toy','total')}
+              {this.renderMonthly('toy')}
             </tr>
             {this.assetsRowRender('toy')}
             <tr>
               <th scope="row">Foreign Currency</th>
-              {this.renderMonthly('foreign','total')}
+              {this.renderMonthly('foreign')}
             </tr>
             {this.assetsRowRender('foreign')}
             <tr>
               <th scope="row">Lending</th>
-              {this.renderMonthly('lending','total')}
+              {this.renderMonthly('lending')}
             </tr>
             {this.assetsRowRender('lending')}
             <tr>
               <th scope="row">Other Assets</th>
-              {this.renderMonthly('otherAsset','total')}
+              {this.renderMonthly('otherAsset')}
             </tr>
             {this.assetsRowRender('otherAsset')}
             <tr>
               <th scope="row">Credit Card</th>
-              {this.renderMonthly('creditCard','total')}
+              {this.renderMonthly('creditCard')}
             </tr>
             {this.assetsRowRender('creditCard')}
             <tr>
               <th scope="row">Borrowing</th>
-              {this.renderMonthly('borrowing','total')}
+              {this.renderMonthly('borrowing')}
             </tr>
             {this.assetsRowRender('borrowing')}
             <tr>
               <th scope="row">Other Liabilities</th>
-              {this.renderMonthly('otherLiability','total')}
+              {this.renderMonthly('otherLiability')}
             </tr>
             {this.assetsRowRender('otherLiability')}
           </tbody>

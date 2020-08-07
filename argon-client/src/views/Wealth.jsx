@@ -50,8 +50,12 @@ import formatDate from '../utils/helper';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import WealthCard from '../components/WealthCard';
+import WealthDefaultCard from '../components/WealthDefaultCard';
 
 class Wealth extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
 
   render() {
@@ -62,10 +66,10 @@ class Wealth extends React.Component {
         <Container className="mt--7" fluid>
           <Row>
             <Col>
-              <WealthCard />
+              <WealthCard/>
             </Col>
             <Col>
-              <WealthCard />
+              <WealthDefaultCard/>
             </Col>
           </Row>
         </Container>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const accountPlanSchema = new mongoose.Schema({
   //ACCOUNT SPECIFIC
-  //farm: { type: mongoose.Schema.ObjectId}, //referred to at farm level
+  //farm: { type: mongoose.Schema.ObjectId}, //referred to at Farm model
   initializedBalance: { type: Number, default: 0 }, //unnecessary but convenient to convert to account
   
 

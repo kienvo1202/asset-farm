@@ -40,6 +40,7 @@ class AssetForm extends React.Component {
     //this.props.loadFormValues(this.props.initialProps);
   }
   onSubmit = async formValues => {
+    console.log("onsubmit",this.props.accountId)
     const { assetTypes } = this.state;
     const defaultValues = assetTypes[this.props.assetCreationForm.type];
     const account = {
@@ -54,20 +55,23 @@ class AssetForm extends React.Component {
       simpleAnnualInterest: formValues.simpleAnnualInterest,
       term: formValues.term
     };
+    console.log("justbefore",this.props.accountId)
+    this.props.onSubmitFunction()
+    
     if (this.props.accountId === 'newAccount') {
       await this.props.createAsset(account);
     } else {
       await this.props.editAsset(this.props.accountId, account);
     }
     
-    
+    console.log("done submitting")
     // await this.props.fetchAssets(this.props.currentFarm);
-    console.log("123")
     // this.props.mountAssetCard()
   };
 
   onDelete = async () => {
     await this.props.deleteAsset(this.props.accountId);
+    this.props.onSubmitFunction()
   };
 
   renderFormOptionTypes = () => {

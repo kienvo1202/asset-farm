@@ -23,6 +23,13 @@ export const mountAssetCard = () => {
     type: 'MOUNT_ASSET_CARD'
   };
 };
+export const extractMaxYChart = (maxY) => {
+  //console.log('action',recurringMode)
+  return {
+    type: 'EXTRACT_MAX_Y_CHART',
+    payload: maxY
+  };
+};
 
 export const changeCurrentFarm = farmId => {
   return {

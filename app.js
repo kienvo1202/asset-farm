@@ -2,6 +2,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const accountRouter = require('./routes/accountRoutes');
+const accountPlanRouter = require('./routes/accountPlanRoutes');
 const transactionRouter = require('./routes/transactionRoutes');
 const userRouter = require('./routes/userRoutes');
 const farmRouter = require('./routes/farmRoutes');
@@ -20,6 +21,7 @@ app.use(express.json({ limit: '12kb' }));
 //app.use('/api/v1/ios', ioRouter);
 //app.use('/api/v1/assets', assetRouter);
 app.use('/api/v1/accounts', accountRouter);
+app.use('/api/v1/accountPlans', accountPlanRouter);
 app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/farms', farmRouter);

@@ -24,6 +24,8 @@ const recordDisplayModeReducer = (mode = displayMode, action) => {
       return { ...mode, recurringMode: action.payload };
     case 'MOUNT_ASSET_CARD':
       return { ...mode, mountAssetCardId: mode.mountAssetCardId + 1 };
+    case 'EXTRACT_MAX_Y_CHART':
+      return {...mode, [action.payload.chart]:action.payload.value}
     default:
       return mode;
   }

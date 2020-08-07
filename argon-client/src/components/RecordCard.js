@@ -63,7 +63,7 @@ class RecordCard extends React.Component {
     };
     //console.log(formValues, transactions);
     await this.props.createTransaction(transactions);
-    // await this.props.fetchTransactions(this.props.currentFarm); //re-fetch for display
+    await this.props.fetchTransactions(this.props.currentFarm,50); //re-fetch to display from/to
   };
 
   renderError = ({ error, submitFailed }) => {

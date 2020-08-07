@@ -4,7 +4,7 @@ const farmSchema = new mongoose.Schema({
   name: { type: String, required: [true, 'Must have name'] },
   portfolio: [ {
     type: mongoose.Schema.ObjectId,
-    ref: 'Portfolio_01'
+    ref: 'AccountPlan_01'
   }],
   createdAt: { type: Date, default: Date.now() }
 });

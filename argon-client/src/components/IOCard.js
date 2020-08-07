@@ -201,11 +201,11 @@ class IOCard extends React.Component {
           <thead className="thead-light">
             <tr>
               <th scope="col">Items</th>
-              <th scope="col">Average</th>
-              <th scope="col">Budget</th>
+              <th scope="col" className="text-right">Average</th>
+              <th scope="col" className="text-right">Budget</th>
               {this.state.displayMonth.map(e => {
                 return (
-                  <th scope="col">
+                  <th className="text-right" scope="col">
                     {new Date(
                       new Date().getFullYear(),
                       new Date().getMonth() - e,
@@ -219,7 +219,7 @@ class IOCard extends React.Component {
           <tbody>
             <tr>
               <th scope="row">Total Income</th>
-              <td>
+              <td className="text-right"> 
                 {!_.isEmpty(this.props.statements.io) &&
                   new Intl.NumberFormat('en-US').format(
                     -_.round(
@@ -245,7 +245,7 @@ class IOCard extends React.Component {
             {this.iosRowRender('income')}
             <tr>
               <th scope="row">Total Expense</th>
-              <td>
+              <td className="text-right">
                 {!_.isEmpty(this.props.statements.io) &&
                   new Intl.NumberFormat('en-US').format(
                     _.round(

@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardHeader,
+  CardFooter,
   CardBody,
   NavItem,
   NavLink,
@@ -15,7 +16,10 @@ import {
   FormGroup,
   Form,
   Input,
-  Modal
+  Modal,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchTransactions, deleteTransaction } from '../actions';
@@ -23,11 +27,11 @@ import { fetchTransactions, deleteTransaction } from '../actions';
 class TransactionCard extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {transactionPage: 1};
   }
 
   async componentDidMount() {
-    this.props.fetchTransactions(this.props.currentFarm);    
+    this.props.fetchTransactions(this.props.currentFarm,50);
   }
 
   //each modal needs a different ID to display differently, or it'll be overlapping rendered...
@@ -112,11 +116,33 @@ class TransactionCard extends React.Component {
     );
   };
 
+  scrollTransactionPage = async (direction) => {
+    const left = ['l','left','0',0]
+    const right = ['r','right','1',1]
+    let newPage = this.state.transactionPage
+    if (left.includes(direction)) {
+      if (this.state.transactionPage === 1) {
+        newPage = 1
+      } else {
+        newPage = this.state.transactionPage - 1
+      }
+    } else if (right.includes(direction)) {
+      newPage = this.state.transactionPage + 1
+    } 
+
+    if ((newPage * 25) > 50) {
+      await this.props.fetchTransactions(this.props.currentFarm,newPage*25);
+    }
+    this.setState({transactionPage:newPage})
+    console.log(this.state.transactionPage)
+  }
+
   renderTransactionsRow = () => {
     //console.log(Object.values(this.props.transactions))
+    // console.log(this.state.transactionPage)
     const rows = Object.values(this.props.transactions)
       .sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0))
-      .slice(0, 30)
+      .slice((this.state.transactionPage - 1 )* 25, this.state.transactionPage  * 25)
       .map(e => {
         const tdRowStyle = { overFlow: 'break-word', whiteSpace: 'pre-wrap', fontSize: '0.75rem' };
 
@@ -171,9 +197,31 @@ class TransactionCard extends React.Component {
               </h2>
             </div>
             <div className="col text-right">
-              <Button color="primary" href="#pablo" onClick={e => e.preventDefault()} size="sm">
-                Quick Edit
-              </Button>
+            <nav aria-label="...">
+                    <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      <PaginationItem>
+                        <PaginationLink
+                          onClick={() => this.scrollTransactionPage('left')}
+                          tabIndex="-1"
+                        >
+                          <i className="fas fa-angle-left" />
+                          <span className="sr-only">Previous</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                      
+                      <PaginationItem>
+                        <PaginationLink
+                          onClick={() => this.scrollTransactionPage('right')}
+                        >
+                          <i className="fas fa-angle-right" />
+                          <span className="sr-only">Next</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                    </Pagination>
+                  </nav>
             </div>
           </Row>
         </CardHeader>
