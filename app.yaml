@@ -4,3 +4,5 @@ service: farm-backyard-backend
 
 includes:
     - env_vars.yaml
+
+instance_class: F2

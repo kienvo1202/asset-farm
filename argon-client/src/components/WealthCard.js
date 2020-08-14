@@ -34,6 +34,8 @@ import Chart from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { chartOptions, parseOptions, chartExample1, chartExample2 } from 'variables/charts.jsx';
 import { accountTypesDefaultValues } from '../utils/constants';
+import PlanForm from './widgets/PlanForm';
+import NetIncomeForm from './widgets/NetIncomeForm';
 
 class WealthCard extends React.Component {
   constructor() {
@@ -125,7 +127,6 @@ class WealthCard extends React.Component {
         }
       }
     });
-    console.log('default', commonMax, this.state);
   }
 
   //forecast future values for 1 account at 1 certain time, with a specific initial/starting amount
@@ -134,13 +135,17 @@ class WealthCard extends React.Component {
     let goodFactor = 1;
     let usualFactor = 1;
     let badFactor = 1;
-    let worstFactor = 1;
+    let unexpectedFactor = 1;
     let goodBalance = latestBalance;
     let usualBalance = latestBalance;
     let badBalance = latestBalance;
-    let worstBalance = latestBalance;
+    let unexpectedBalance = latestBalance;
 
-    if (account.type === 'saving') {
+    if (period < 0) {
+      goodFactor = 0
+      usualFactor = 0
+      badFactor = 0
+    } else if (account.type === 'saving') {
       goodFactor = Math.pow(1 + account.simpleAnnualInterest / 1200, period);
       usualFactor = Math.pow(1 + account.simpleAnnualInterest / 1200, period);
       // liquidity risk, early withdrawal
@@ -149,21 +154,27 @@ class WealthCard extends React.Component {
       // IF CASH TO SAVING?
       //some deteoration 1%/year
       //badFactor = Math.pow(1 - 1 / 1200, period );
+      //cash will be calculated with Plan Accounts
+      goodFactor = 0
+      usualFactor = 0
+      badFactor = 0
     } else if (account.type === 'bond') {
+      
       goodFactor =
-        (1 + account.simpleAnnualInterest / ((100 * 12) / account.term)) * (period / account.term);
+        Math.pow(1 + account.simpleAnnualInterest / 100 / 12 * account.term,period / account.term)
       //default risk
       usualFactor =
         goodFactor *
         (1 -
-          (Math.pow(1 + account.defaultProbability, period / 12) - 1) * //probs of loss
-            account.percentLossGivenDefault);
+          (Math.pow(1 + account.probabilityOfDefault/100, period / 12) - 1) * //probs of loss
+            account.percentLossGivenDefault/100);
       badFactor =
         goodFactor *
         (1 -
           3 *
-          (Math.pow(1 + account.defaultProbability, period / 12) - 1) * //probs of loss
-            account.percentLossGivenDefault);
+          (Math.pow(1 + account.probabilityOfDefault/100, period / 12) - 1) * //probs of loss
+            account.percentLossGivenDefault/100);
+      // console.log(goodFactor,usualFactor,badFactor)
     } else if (account.type === 'stock') {
       usualFactor = Math.pow(1 + 0.009669902, period);
       //good and bad here fit better for the first 10 years, but not 30 years...
@@ -177,8 +188,8 @@ class WealthCard extends React.Component {
       goodFactor = usualFactor + 0.6795034 * Math.log(1 + 0.1684513 * period);
       badFactor = usualFactor - 2.373353072 * Math.log(1 + 0.004302365 * period);
     } else if (account.type === 'insurance') {
-      //worst, exceptional case
-      worstFactor = 1;
+      //unexpected, exceptional case
+      unexpectedFactor = 1;
     } else if (account.type === 'toy') {
       //depreciation
       usualFactor = Math.pow(1 - 0.036, period);
@@ -194,25 +205,21 @@ class WealthCard extends React.Component {
     result.goodForecastBalance = goodBalance * goodFactor;
     result.usualForecastBalance = usualBalance * usualFactor;
     result.badForecastBalance = badBalance * badFactor;
-    result.worstForecastBalance = worstBalance * worstFactor;
+    result.unexpectedForecastBalance = unexpectedBalance * unexpectedFactor;
 
     return result;
   };
 
   //aggregate forecasted balances of multiple accounts into 3 scenarios
   calculateForecastAsset = () => {
-    console.log('cal worth');
     const startTime = Date.now();
     // const assets = this.props.assets;
     let sumGoodForecast = [];
     let sumUsualForecast = [];
     let sumBadForecast = [];
-
+    
+    //prepare forecast data for charts
     Object.values(this.props.assets).map(account => {
-      const a = account._id;
-      let goodForecast = [];
-      let usualForecast = [];
-      let badForecast = [];
 
       const latestBalance = this.props.statements.assets[account._id][new Date().getFullYear()][
         new Date().getMonth() + 1
@@ -220,43 +227,74 @@ class WealthCard extends React.Component {
 
       this.state.displayMonth.map(month => {
         const forecast = this.forecastAssetScenarios(account, latestBalance, month);
-        goodForecast[month] = forecast.goodForecastBalance;
-        usualForecast[month] = forecast.usualForecastBalance;
-        badForecast[month] = forecast.badForecastBalance;
         sumGoodForecast[month] = (sumGoodForecast[month] || 0) + forecast.goodForecastBalance;
         sumUsualForecast[month] = (sumUsualForecast[month] || 0) + forecast.usualForecastBalance;
         sumBadForecast[month] = (sumBadForecast[month] || 0) + forecast.badForecastBalance;
-        // if (account.type === "stock") {
-        //   console.log("ood",sumGoodForecast[month], "usual",sumUsualForecast[month], "bad",sumBadForecast[month]);
-        // }
       });
-
-      // console.log(account, latestBalance, goodForecast[60], usualForecast[60], badForecast[60]);
-      //console.log("good",sumGoodForecast[121], "usual",sumUsualForecast[121], "bad",sumBadForecast[121]);
     });
 
-    //add static salary to balances
-    this.state.displayMonth.map(month => {
-      const net = _.round(
+    //add static salary to balances ....
+    const netIncome =
+      this.props.currentFarmInfo.averageNetIncomePlan ||
+      _.round(
         -this.props.statements.io['income'].average - this.props.statements.io['expense'].average,
         -5
       );
-      const r = 0.037 / 12; //current 1m interest
-      // add 0.95 factor as not all cash is kept to maturity
-      const goodFactor = (Math.pow(1 + 1.25 * 0.95 * r, month) - 1) / r;
-      const usualFactor = (Math.pow(1 + 0.93 * 0.95 * r, month) - 1) / r;
-      const badFactor = (Math.pow(1 + 0.71 * 0.95 * r, month) - 1) / r;
+    const r = 0.037 / 12; //current 1m interest
 
-      sumGoodForecast[month] = Number.parseFloat(
-        (sumGoodForecast[month] || 0) + net * goodFactor
-      ).toPrecision(4);
-      sumUsualForecast[month] = Number.parseFloat(
-        (sumUsualForecast[month] || 0) + net * usualFactor
-      ).toPrecision(4);
-      sumBadForecast[month] = Number.parseFloat(
-        (sumBadForecast[month] || 0) + net * badFactor
-      ).toPrecision(4);
-      // console.log(net, usualFactor);
+    //calculate Cash vector and EffectiveMonth of Plan
+    const spareCashVector = []
+    const latestCashBalance = this.props.statements.assets.cash[new Date().getFullYear()][new Date().getMonth() + 1].balance
+    const portfolioDup = [...this.props.currentFarmInfo.portfolio] // shallow copy.... ?
+    const portfolioEffective = []
+    let investable = latestCashBalance    
+
+    this.state.displayMonth.map(month => {
+      if (month > 0) {
+        investable = spareCashVector[month - 1] * (1+r*0.9) + netIncome
+      }
+
+      while ( (investable - this.props.statements.io.expense.average) >= (portfolioDup[0] && portfolioDup[0].amount )) {
+        const disbursal = portfolioDup.shift() //object address same as portfolio in State .....
+        investable = investable - disbursal.amount
+        disbursal.effectiveDate = new Date(new Date().getFullYear(), new Date().getMonth() + month,2);
+        portfolioEffective.push(disbursal)
+      }
+
+      spareCashVector[month] = investable
+      sumGoodForecast[month] = (sumGoodForecast[month] || 0) + spareCashVector[month];
+      sumUsualForecast[month] = (sumUsualForecast[month] || 0) + spareCashVector[month];
+      sumBadForecast[month] = (sumBadForecast[month] || 0) + spareCashVector[month];
+    })
+    console.log("portEff",portfolioEffective,"portDUp",portfolioDup," cashvector",spareCashVector)
+
+    //Forecast and Add Plan Assets to chart data
+    portfolioEffective.map(p => {
+      console.log("plan accounts",p)
+      const mDiff = (p.effectiveDate.getFullYear() - new Date().getFullYear()) * 12 +
+      (p.effectiveDate.getMonth() - new Date().getMonth())
+
+      this.state.displayMonth.map(month => {
+        const forecast = this.forecastAssetScenarios(p, p.amount || p.balance, month-mDiff);
+        sumGoodForecast[month] = (sumGoodForecast[month] || 0) + forecast.goodForecastBalance;
+        sumUsualForecast[month] = (sumUsualForecast[month] || 0) + forecast.usualForecastBalance;
+        sumBadForecast[month] = (sumBadForecast[month] || 0) + forecast.badForecastBalance;
+        
+      })
+    })
+
+    //Add salary to chart data
+    this.state.displayMonth.map(month => {
+      // add 0.95 factor as not all cash is kept to maturity
+      // const goodFactor = 0.95 * ((Math.pow(1 + 1.25 *  r, month) - 1) / (1.25*r) - 1) + 1
+      // const usualFactor = 0.95 * ((Math.pow(1 + 0.93  * r, month) - 1) / (0.93*r) -1) + 1
+      // const badFactor = 0.95 * ((Math.pow(1 + 0.71  * r, month) - 1) / (0.71*r) -1)+1
+      // sumGoodForecast[month] = Number.parseFloat((sumGoodForecast[month] || 0) + netIncome * goodFactor).toPrecision(4);
+      // sumUsualForecast[month] = Number.parseFloat((sumUsualForecast[month] || 0) + netIncome * usualFactor).toPrecision(4);
+      // sumBadForecast[month] = Number.parseFloat((sumBadForecast[month] || 0) + netIncome * badFactor).toPrecision(4);
+      sumGoodForecast[month] = Number.parseFloat(sumGoodForecast[month]).toPrecision(4);
+      sumUsualForecast[month] = Number.parseFloat(sumUsualForecast[month] ).toPrecision(4);
+      sumBadForecast[month] = Number.parseFloat(sumBadForecast[month]).toPrecision(4);
     });
 
     console.log(
@@ -268,6 +306,7 @@ class WealthCard extends React.Component {
       sumBadForecast[60]
     );
 
+    //prepare labels data ...
     const labels = this.state.displayMonth.map(month => {
       const d = new Date(new Date().getFullYear(), new Date().getMonth() + month, 1);
       const y = new Intl.DateTimeFormat('en', { year: '2-digit' }).format(d);
@@ -275,6 +314,7 @@ class WealthCard extends React.Component {
       return y + '-' + m;
     });
 
+    //update State...
     this.setState({
       testDataMedian: {
         labels: labels,
@@ -317,9 +357,118 @@ class WealthCard extends React.Component {
     });
   };
 
+  toggleModal = state => {
+    // this.prepareBalanceSheet();
+    this.setState({
+      [state]: !this.state[state]
+    });
+  };
+  //each modal needs a different ID to display differently, or it'll be overlapping rendered...
+  planModal = (action = 'create', index = 0, account) => {
+    const initialProps =
+      action === 'create'
+        ? {
+            type: 'cash',
+            initializedBalance: 0,
+            effectiveDate: new Date().toISOString().split('T')[0],
+            advanced: false
+          }
+        : account;
+    return (
+      <>
+        <DropdownItem
+          onClick={() => {
+            this.props.loadFormValues(initialProps); //Initialized form here
+            this.toggleModal(action + account._id);
+          }}
+        >
+          {action === 'create' ? 'Add Plan Below' : 'Edit'}
+        </DropdownItem>
+        <Modal
+          className="modal-dialog-centered"
+          size="sm"
+          isOpen={this.state[action + account._id]}
+          toggle={() => this.toggleModal(action + account._id)}
+        >
+          <div className="modal-body p-0">
+            <Card className="bg-secondary shadow border-0">
+              <CardBody className="px-lg-5 py-lg-5">
+                <div className="text-center text-muted mb-4">
+                  <small>{action === 'create' ? 'Creating New Plan' : 'Editing Plan'}</small>
+                  <button
+                    aria-label="Close"
+                    className="close"
+                    data-dismiss="modal"
+                    type="button"
+                    onClick={() => this.toggleModal(action + account._id)}
+                  >
+                    <span aria-hidden={true}>×</span>
+                  </button>
+                </div>
+                <PlanForm
+                  action={action}
+                  index={index}
+                  account={account}
+                  calculateFunction={this.calculateForecastAsset}
+                  onSubmitClose={() => {
+                    this.toggleModal(action + account._id);
+                  }}
+                />
+              </CardBody>
+            </Card>
+          </div>
+        </Modal>
+      </>
+    );
+  };
+
+  incomeModal = (type = '') => {
+    const initialProps = { amount: this.props.currentFarmInfo.averageNetIncomePlan || 0 };
+    return (
+      <>
+        <DropdownItem
+          onClick={() => {
+            this.props.loadFormValues(initialProps); //Initialized form here
+            this.toggleModal('incomeEdit');
+          }}
+        >
+          Edit
+        </DropdownItem>
+        <Modal
+          className="modal-dialog-centered"
+          size="sm"
+          isOpen={this.state['incomeEdit']}
+          toggle={() => this.toggleModal('incomeEdit')}
+        >
+          <div className="modal-body p-0">
+            <Card className="bg-secondary shadow border-0">
+              <CardBody className="px-lg-5 py-lg-5">
+                <div className="text-center text-muted mb-4">
+                  <button
+                    aria-label="Close"
+                    className="close"
+                    data-dismiss="modal"
+                    type="button"
+                    onClick={() => this.toggleModal('incomeEdit')}
+                  >
+                    <span aria-hidden={true}>×</span>
+                  </button>
+                </div>
+                <NetIncomeForm
+                  type={type}
+                  calculateFunction={this.calculateForecastAsset}
+                  onSubmitClose={() => this.toggleModal('incomeEdit')}
+                />
+              </CardBody>
+            </Card>
+          </div>
+        </Modal>
+      </>
+    );
+  };
+
   render() {
-    // console.log(this.state);
-    const sampleCard = account => {
+    const sampleCard = (index = 0, account) => {
       return (
         <Col xs="12" lg="12" className="pl-0 pr-2">
           <Row className="m-0 p-0">
@@ -341,19 +490,7 @@ class WealthCard extends React.Component {
                           {account.type == 'income' ? 'Amount' : 'Balance'}
                         </CardTitle>
                         <span className="h4 font-weight-bold mb-0">
-                          {account.type == 'income'
-                            ? new Intl.NumberFormat('en-US').format(
-                                _.round(
-                                  -this.props.statements.io['income'].average -
-                                    this.props.statements.io['expense'].average,
-                                  -3
-                                )
-                              )
-                            : new Intl.NumberFormat('en-US').format(
-                                this.props.statements.assets[account._id][new Date().getFullYear()][
-                                  new Date().getMonth() + 1
-                                ].balance
-                              )}
+                          {new Intl.NumberFormat('en-US').format(account.balance || account.amount)}
                         </span>
                       </Col>
                       <Col className="pb-2 px-0">
@@ -363,16 +500,11 @@ class WealthCard extends React.Component {
                         <span className="text-muted text-sm mb-0">
                           {new Intl.DateTimeFormat('en', {
                             year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit'
+                            month: '2-digit'
+                            // day: '2-digit'
                           }).format(new Date(account.effectiveDate))}
                         </span>
                       </Col>
-                      {/* <Col className="col-auto p-0 float-right">
-                      <div className="icon-shape bg-danger text-white rounded-circle shadow">
-                        <i className="fas fa-chart-bar" />
-                      </div>
-                    </Col> */}
                     </Col>
                     <Col>
                       <CardTitle tag="h5" className="text-muted mb-0">
@@ -411,10 +543,10 @@ class WealthCard extends React.Component {
                   <i className="fas fa-ellipsis-v" />
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem disabled>Add Below</DropdownItem>
+                  {this.planModal('create', index, account)}
                   <DropdownItem divider />
-                  <DropdownItem>Edit</DropdownItem>
-                  <DropdownItem>Delete</DropdownItem>
+                  {index !== -1 ? this.planModal('edit', index, account) : ''}
+                  {index === -1 && account.type === 'income' ? this.incomeModal('plan') : ''}
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Col>
@@ -422,6 +554,7 @@ class WealthCard extends React.Component {
         </Col>
       );
     };
+
     return (
       <>
         <Card className="shadow pb-5">
@@ -429,7 +562,7 @@ class WealthCard extends React.Component {
             <Row className="align-items-center">
               <div className="col">
                 <h6 className="text-uppercase text-muted ls-1 mb-1">Forecast</h6>
-                <h2 className="mb-0">Total Wealth with Basic Savings</h2>
+                <h2 className="mb-0">Total Wealth</h2>
               </div>
             </Row>
           </CardHeader>
@@ -441,16 +574,29 @@ class WealthCard extends React.Component {
           </CardBody>
         </Card>
         <Row className="mx-0" style={{ 'overflow-y': 'scroll', height: '50vh' }}>
-          {sampleCard({
+          {sampleCard(-1, {
             type: 'income',
             name: 'Investable Net Income',
+            amount:
+              this.props.currentFarmInfo.averageNetIncomePlan ||
+              _.round(
+                -this.props.statements.io['income'].average -
+                  this.props.statements.io['expense'].average,
+                -5
+              ),
             effectiveDate: new Date()
           })}
-          {sampleCard({
+          {sampleCard(-1, {
             type: 'mixed',
             name: 'Total Wealth',
+            balance: this.props.statements.assets.net[new Date().getFullYear()][
+              new Date().getMonth() + 1
+            ].balance,
             _id: 'net',
             effectiveDate: new Date()
+          })}
+          {this.props.currentFarmInfo.portfolio.map((account, index) => {
+            return sampleCard(index, account);
           })}
           {/* {Object.values(this.props.assets).map(account => sampleCard(account))} */}
         </Row>
@@ -466,6 +612,7 @@ const mapStateToProps = state => {
     transactions: state.transactions,
     statements: state.statements,
     currentFarm: state.currentFarm,
+    currentFarmInfo: state.currentFarmInfo,
     display: state.displayMode
   };
 };

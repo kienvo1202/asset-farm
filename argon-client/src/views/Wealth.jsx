@@ -65,10 +65,10 @@ class Wealth extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
-            <Col>
+            <Col lg="6">
               <WealthCard/>
             </Col>
-            <Col>
+            <Col lg="6">
               <WealthDefaultCard/>
             </Col>
           </Row>

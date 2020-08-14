@@ -36,12 +36,10 @@ class AssetCard extends React.Component {
   //   await this.props.fetchAssets(this.props.currentFarm);
   //   await this.props.fetchIncomeStatement(this.props.currentFarm);
   //   this.balanceSheet();
-  //   console.log("update")
+  
   // }
 
   toggleModal = state => {
-    console.log("asset modal toggle",state,this.state)
-    
     this.prepareBalanceSheet();
     this.setState({
       [state]: !this.state[state]
@@ -50,12 +48,7 @@ class AssetCard extends React.Component {
 
   //each modal needs a different ID to display differently, or it'll be overlapping rendered...
   accountModal = (accountId, initialProps = {}, icon) => {
-    // console.log('1', this.state.assetTypes);
-    // console.log('2', this.props.assetCreationForm.type);
-    // console.log('3', this.state.assetTypes[this.props.assetCreationForm.type]);
-    //console.log('4',this.props);
-    //console.log('button modal',initialProps)
-    console.log("render",accountId)
+    
     return (
       <>
         <Button
@@ -84,8 +77,22 @@ class AssetCard extends React.Component {
               <CardBody className="px-lg-5 py-lg-5">
                 <div className="text-center text-muted mb-4">
                   <small>{accountId === 'newAccount' ? 'Create new asset!' : 'Edit asset'}</small>
+                  <button
+                    aria-label="Close"
+                    className="close"
+                    data-dismiss="modal"
+                    type="button"
+                    onClick={() => this.toggleModal(accountId)}
+                  >
+                    <span aria-hidden={true}>×</span>
+                  </button>
                 </div>
-                <AssetForm accountId={accountId} onSubmitFunction={() => {this.toggleModal(accountId)}}/>
+                <AssetForm
+                  accountId={accountId}
+                  onSubmitClose={() => {
+                    this.toggleModal(accountId);
+                  }}
+                />
               </CardBody>
             </Card>
           </div>
@@ -94,7 +101,7 @@ class AssetCard extends React.Component {
     );
   };
 
-  calculateMonthlyAccountBalance = (account,flatStatement, date) => {
+  calculateMonthlyAccountBalance = (account, flatStatement, date) => {
     const debit = d3.sum(
       flatStatement.filter(e => e.account === account._id && new Date(e.m) <= date),
       d => d.totalDebit
@@ -103,11 +110,11 @@ class AssetCard extends React.Component {
       flatStatement.filter(e => e.account === account._id && new Date(e.m) <= date),
       d => d.totalCredit
     );
-  
+
     const net = debit - credit;
-    const balance = net + account.initializedBalance
-    return balance
-  }
+    const balance = net + account.initializedBalance;
+    return balance;
+  };
 
   prepareBalanceSheet = () => {
     const startTime = Date.now();
@@ -124,36 +131,44 @@ class AssetCard extends React.Component {
         balanceSheet[a] = balanceSheet[a] || {};
         balanceSheet[a][y] = balanceSheet[a][y] || {};
         balanceSheet[a][y][m] = balanceSheet[a][y][m] || {};
-        balanceSheet[a][y][m].balance = this.calculateMonthlyAccountBalance(account,flatStatement,d);
-        
+        balanceSheet[a][y][m].balance = this.calculateMonthlyAccountBalance(
+          account,
+          flatStatement,
+          d
+        );
+
         ////accumulating monthly Asset type totals
         balanceSheet[account.type] = balanceSheet[account.type] || {};
         balanceSheet[account.type][y] = balanceSheet[account.type][y] || {};
         balanceSheet[account.type][y][m] = balanceSheet[account.type][y][m] || {};
         balanceSheet[account.type][y][m].balance =
           (balanceSheet[account.type][y][m].balance || 0) + balanceSheet[a][y][m].balance;
-        
+
         ////accumulating monthly NET asset
         balanceSheet.net = balanceSheet.net || {};
         balanceSheet.net[y] = balanceSheet.net[y] || {};
         balanceSheet.net[y][m] = balanceSheet.net[y][m] || {};
         balanceSheet.net[y][m].balance =
           (balanceSheet.net[y][m].balance || 0) + balanceSheet[a][y][m].balance;
-
       });
-      // console.log("test balance formula",account.name,
-      // this.calculateMonthlyAccountBalance(account,flatStatement, 
-      //   new Date(new Date().getFullYear(), 11, 2)))
+      
+      
     });
     this.props.storeStatements({ name: 'assets', statement: balanceSheet });
-    //console.log(balanceSheet, Date.now() - startTime);
+    
   };
 
   assetsRowRender = assetName => {
     const data = Object.values(this.props.assets).filter(e => e.type === assetName);
 
     const rows = data
-      .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0))
+      .sort((a, b) =>
+        a.name.toLowerCase() > b.name.toLowerCase()
+          ? 1
+          : b.name.toLowerCase() > a.name.toLowerCase()
+          ? -1
+          : 0
+      )
       .map(account => {
         return (
           <tr>
@@ -186,29 +201,29 @@ class AssetCard extends React.Component {
     return rows;
   };
 
-  renderMonthly = (asset) => {
-    if (_.isEmpty(this.props.statements.assets)) return 
+  renderMonthly = asset => {
+    if (_.isEmpty(this.props.statements.assets)) return;
 
     const balances = this.state.displayMonth.map(m => {
       const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);
       return (
         <td className="text-right">
           {new Intl.NumberFormat('en-US').format(
-            this.accessMonthly(asset,d.getFullYear(),d.getMonth() + 1)
+            this.accessMonthly(asset, d.getFullYear(), d.getMonth() + 1)
           )}
         </td>
       );
-    })
+    });
     return balances;
-  }
-  
-  accessMonthly = (asset,y,m) => {
-    if (!this.props.statements.assets[asset]) return 0
-    if (!this.props.statements.assets[asset][y]) return 0
-    if (!this.props.statements.assets[asset][y][m]) return 0
+  };
 
-    return (this.props.statements.assets[asset][y][m].balance || 0)
-  }
+  accessMonthly = (asset, y, m) => {
+    if (!this.props.statements.assets[asset]) return 0;
+    if (!this.props.statements.assets[asset][y]) return 0;
+    if (!this.props.statements.assets[asset][y][m]) return 0;
+
+    return this.props.statements.assets[asset][y][m].balance || 0;
+  };
 
   render() {
     return (
@@ -260,10 +275,8 @@ class AssetCard extends React.Component {
             </tr>
           </thead>
           <tbody>
-          <tr>
-              <th scope="row">
-                TOTAL WEALTH
-              </th>
+            <tr>
+              <th scope="row">TOTAL WEALTH</th>
               {this.renderMonthly('net')}
             </tr>
             <tr>
@@ -296,8 +309,8 @@ class AssetCard extends React.Component {
                   return (
                     <td className="text-right">
                       {new Intl.NumberFormat('en-US').format(
-                        this.accessMonthly('bond',d.getFullYear(),d.getMonth() + 1) +
-                        this.accessMonthly('stock',d.getFullYear(),d.getMonth() + 1)
+                        this.accessMonthly('bond', d.getFullYear(), d.getMonth() + 1) +
+                          this.accessMonthly('stock', d.getFullYear(), d.getMonth() + 1)
                       )}
                     </td>
                   );

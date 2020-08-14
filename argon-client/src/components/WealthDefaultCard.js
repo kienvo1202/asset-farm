@@ -125,7 +125,7 @@ class WealthCard extends React.Component {
         }
       }
     });
-    console.log('default', commonMax, this.state);
+    // console.log('default', commonMax, this.state);
   }
 
   //forecast future values for 1 account at 1 certain time, with a specific initial/starting amount
@@ -148,10 +148,10 @@ class WealthCard extends React.Component {
     } else if (account.type === 'cash') {
       // IF CASH TO SAVING?
       if (true) {
-      const r = 0.037 / 12
-        goodFactor = Math.pow(1 + 1.25 * 0.95 * r, period);
-        usualFactor = Math.pow(1 + 0.93 * 0.95 * r, period);
-        badFactor = Math.pow(1 + 0.71 * 0.95 * r, period);
+        const r = 0.037 / 12
+        goodFactor = 1 + 0.98 * (Math.pow(1 + 1.25 * r, period) - 1);
+        usualFactor = 1 + 0.95 * (Math.pow(1 + 0.93 * r, period) - 1);
+        badFactor = 1 + 0.8 * (Math.pow(1 + 0.71 * r, period) - 1);
       }
       //some deteoration 1%/year
       //badFactor = Math.pow(1 - 1 / 1200, period );
@@ -207,7 +207,7 @@ class WealthCard extends React.Component {
 
   //aggregate forecasted balances of multiple accounts into 3 scenarios
   calculateForecastAsset = () => {
-    console.log('cal worth');
+    // console.log('cal worth');
     const startTime = Date.now();
     // const assets = this.props.assets;
     let sumGoodForecast = [];
@@ -215,10 +215,10 @@ class WealthCard extends React.Component {
     let sumBadForecast = [];
 
     Object.values(this.props.assets).map(account => {
-      const a = account._id;
-      let goodForecast = [];
-      let usualForecast = [];
-      let badForecast = [];
+      
+      // let goodForecast = [];
+      // let usualForecast = [];
+      // let badForecast = [];
 
       const latestBalance = this.props.statements.assets[account._id][new Date().getFullYear()][
         new Date().getMonth() + 1
@@ -226,9 +226,9 @@ class WealthCard extends React.Component {
 
       this.state.displayMonth.map(month => {
         const forecast = this.forecastAssetScenarios(account, latestBalance, month);
-        goodForecast[month] = forecast.goodForecastBalance;
-        usualForecast[month] = forecast.usualForecastBalance;
-        badForecast[month] = forecast.badForecastBalance;
+        // goodForecast[month] = forecast.goodForecastBalance;
+        // usualForecast[month] = forecast.usualForecastBalance;
+        // badForecast[month] = forecast.badForecastBalance;
         sumGoodForecast[month] = (sumGoodForecast[month] || 0) + forecast.goodForecastBalance;
         sumUsualForecast[month] = (sumUsualForecast[month] || 0) + forecast.usualForecastBalance;
         sumBadForecast[month] = (sumBadForecast[month] || 0) + forecast.badForecastBalance;
@@ -249,9 +249,9 @@ class WealthCard extends React.Component {
       );
       const r = 0.037 / 12; //current 1m interest
       // add 0.95 factor as not all cash is kept to maturity
-      const goodFactor = (Math.pow(1 + 1.25 * 0.95 * r, month) - 1) / r;
-      const usualFactor = (Math.pow(1 + 0.93 * 0.95 * r, month) - 1) / r;
-      const badFactor = (Math.pow(1 + 0.71 * 0.95 * r, month) - 1) / r;
+      const goodFactor = 0.95 * ((Math.pow(1 + 1.25 *  r, month) - 1) / (1.25*r) - 1) + 1
+      const usualFactor = 0.95 * ((Math.pow(1 + 0.93  * r, month) - 1) / (0.93*r) -1) + 1
+      const badFactor = 0.95 * ((Math.pow(1 + 0.71  * r, month) - 1) / (0.71*r) -1)+1
 
       sumGoodForecast[month] = Number.parseFloat(
         (sumGoodForecast[month] || 0) + net * goodFactor
@@ -266,7 +266,7 @@ class WealthCard extends React.Component {
     });
 
     console.log(
-      'FINAL!! good',
+      'FINAL default',
       sumGoodForecast[60],
       'usual',
       sumUsualForecast[60],

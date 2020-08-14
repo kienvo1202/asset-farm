@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { signIn, signOut, changeCurrentFarm,storeAuth } from '../../actions';
+import { signIn, signOut, changeCurrentFarm,fetchFarm,storeAuth } from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -32,6 +32,12 @@ class GoogleAuth extends React.Component {
     //this.props.authUnload();
   }
 
+  changeFarm = async (farmId) => {
+    this.props.changeCurrentFarm(farmId)
+    if (farmId) { 
+      await this.props.fetchFarm(farmId)
+    }
+  }
   
   onAuthChange = async isSignedIn => { // isSignedIn here is maybe passed on from callback of this.auth.isSignedIn.listen
     
@@ -80,11 +86,11 @@ class GoogleAuth extends React.Component {
       } else {
         this.props.signIn(user.data.data.docs[0]);
       }
-      this.props.changeCurrentFarm(user.data.data.docs[0].farms[0])
+      this.changeFarm(user.data.data.docs[0].farms[0])
 
     } else {
       this.props.signOut();
-      this.props.changeCurrentFarm("")
+      this.changeFarm("")
     }
   };
 
@@ -123,4 +129,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, { signIn, signOut,changeCurrentFarm,storeAuth })(GoogleAuth));
+export default withRouter(connect(mapStateToProps, { signIn, signOut,changeCurrentFarm,fetchFarm,storeAuth })(GoogleAuth));

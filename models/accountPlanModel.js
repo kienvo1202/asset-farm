@@ -52,5 +52,4 @@ const accountPlanSchema = new mongoose.Schema({
 });
 
 const AccountPlan = mongoose.model('AccountPlan_01', accountPlanSchema);
-
 module.exports = AccountPlan;

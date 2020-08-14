@@ -61,3 +61,56 @@ export const deleteAsset = id => {
     dispatch({ type: 'DELETE_ASSET', payload: id });
   };
 };
+
+//FARMS...
+export const fetchFarm = id => {
+    return async function(dispatch, getState) {
+      const response = await axios.get(`/api/v1/farms/${id}`);
+      dispatch({ type: 'FETCH_FARM', payload: response.data.data.doc });
+    };
+  };
+  export const createFarm = formValues => {
+    return async function(dispatch, getState) {
+      const response = await axios.post('/api/v1/farms', formValues);
+      dispatch({ type: 'CREATE_FARM', payload: response.data.data.newDoc });
+    };
+  };
+  export const editFarm = (id, formValues) => {
+    return async function(dispatch, getState) {
+      const response = await axios.patch(`/api/v1/farms/${id}`, formValues);
+      dispatch({ type: 'EDIT_FARM', payload: response.data.data.doc });
+    };
+  };
+  export const deleteFarm = id => {
+    return async function(dispatch, getState) {
+      const response = await axios.delete(`/api/v1/farms/${id}`);
+      dispatch({ type: 'DELETE_FARM', payload: id });
+    };
+  };
+
+  //FARMS...
+export const fetchAccountPlan = id => {
+  return async function(dispatch, getState) {
+    const response = await axios.get(`/api/v1/accountPlans/${id}`);
+    dispatch({ type: 'FETCH_ACCOUNT_PLAN', payload: response.data.data.doc });
+  };
+};
+export const createAccountPlan = formValues => {
+  return async function(dispatch, getState) {
+    const response = await axios.post('/api/v1/accountPlans', formValues);
+    dispatch({ type: 'CREATE_ACCOUNT_PLAN', payload: response.data.data.newDoc });
+  };
+};
+export const editAccountPlan = (id, formValues) => {
+  return async function(dispatch, getState) {
+    const response = await axios.patch(`/api/v1/accountPlans/${id}`, formValues);
+    dispatch({ type: 'EDIT_ACCOUNT_PLAN', payload: response.data.data.doc });
+  };
+};
+export const deleteAccountPlan = id => {
+  return async function(dispatch, getState) {
+    const response = await axios.delete(`/api/v1/accountPlans/${id}`);
+    dispatch({ type: 'DELETE_ACCOUNT_PLAN', payload: id });
+  };
+};
+

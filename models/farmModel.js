@@ -6,9 +6,19 @@ const farmSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'AccountPlan_01'
   }],
+  averageNetIncomePlan: { type: Number },
+  averageNetIncomeDefault: { type: Number },
   createdAt: { type: Date, default: Date.now() }
 });
 
-const Farm = mongoose.model('Farm_02', farmSchema);
+farmSchema.pre(/^find/, function(next) {
+  //console.log('111111111',this)
+  this.populate({
+    path: 'portfolio'
+  })
+  
+  next();
+});
 
+const Farm = mongoose.model('Farm_02', farmSchema);
 module.exports = Farm;

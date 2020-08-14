@@ -30,18 +30,18 @@ import {
   createAsset,
   editAsset,
   deleteAsset,
-  loadFormValues,
   fetchAccountPlan,
   createAccountPlan,
   editAccountPlan,
   deleteAccountPlan,
   fetchFarm,
   editFarm,
+  loadFormValues,
   mountAssetCard
 } from '../../actions';
 import { accountTypesDefaultValues } from '../../utils/constants';
 
-class AssetForm extends React.Component {
+class PlanForm extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -59,6 +59,7 @@ class AssetForm extends React.Component {
       type: formValues.type,
       name: formValues.name,
       initializedBalance: formValues.initializedBalance,
+      amount: formValues.amount,
       nativeDebitCredit: defaultValues.nativeDebitCredit,
       liquidityScore: formValues.liquidityScore || defaultValues.liquidityScore,
       effectiveDate: formValues.effectiveDate,
@@ -76,16 +77,46 @@ class AssetForm extends React.Component {
 
     this.props.onSubmitClose();
 
-    if (this.props.accountId === 'newAccount') {
-      await this.props.createAsset(account);
+    if (this.props.action === 'create') {
+      //Create a new plan account
+      // const newPlan = await this.props.createAccountPlan(account);
+      const newPlan = await axios.post(`/api/v1/accountPlans/`,account)
+
+      //Add new plan to array Portfolio in Farm
+      const portfolio = [...this.props.currentFarmInfo.portfolio]
+      portfolio.splice(
+        this.props.index + 1,
+        0,
+        newPlan.data.data.newDoc._id
+      );
+      
+      await this.props.editFarm(this.props.currentFarm, { portfolio });
+      
     } else {
-      await this.props.editAsset(this.props.accountId, account);
+      await this.props.editAccountPlan(this.props.account._id, account);
+      
+      // await axios.patch(`/api/v1/accountPlans/${this.props.account._id}`,account)
+      //no need to edit Portfolio Farm
     }
+    //refetch to fill portfolio...
+    await this.props.fetchFarm(this.props.currentFarm)
+    //recalculate
+    this.props.calculateFunction()
   };
 
   onDelete = async () => {
     this.props.onSubmitClose();
-    await this.props.deleteAsset(this.props.accountId);
+    // await this.props.deleteAccountPlan(this.props.account._id);
+    await axios.delete(`/api/v1/accountPlans/${this.props.account._id}`)
+
+    const portfolio = [...this.props.currentFarmInfo.portfolio]
+      portfolio.splice(
+        this.props.index,
+        1
+      );
+    await this.props.editFarm(this.props.currentFarm, { portfolio });
+    await this.props.fetchFarm(this.props.currentFarm)
+    this.props.calculateFunction()
   };
 
   renderFormOptionTypes = () => {
@@ -148,6 +179,23 @@ class AssetForm extends React.Component {
       </FormGroup>
     );
   };
+  renderFormAmount = ({ input }) => {
+    return (
+      <FormGroup>
+        <label className="form-control-label" htmlFor="input-description">
+          Amount
+        </label>
+        <InputGroup className="input-group-alternative">
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>
+              <i className="fas fa-spell-check" />
+            </InputGroupText>
+          </InputGroupAddon>
+          <Input placeholder="0" min="0" type="number" {...input} />
+        </InputGroup>
+      </FormGroup>
+    );
+  };
   renderFormAdvanced = ({ input }) => {
     return (
       <FormGroup>
@@ -172,37 +220,22 @@ class AssetForm extends React.Component {
           {label}
         </label>
         <InputGroup className="input-group-alternative">
-          {/* <InputGroupAddon addonType="prepend">
-            <InputGroupText>
-              <i className="fas fa-spell-check" />
-            </InputGroupText>
-          </InputGroupAddon> */}
           <Input placeholder={placeholder} type={type} min={min} max={max} {...input} />
         </InputGroup>
       </FormGroup>
     );
   };
-
+  
   render() {
     return (
       <Form role="form" onSubmit={this.props.handleSubmit(this.onSubmit)}>
         <Field name="type" component={this.renderFormType} />
         <Field name="name" component={this.renderFormName} />
-        <Field name="initializedBalance" component={this.renderFormBalance} />
+        <Field name="amount" component={this.renderFormAmount} />
+        {/* <Field name="initializedBalance" component={this.renderFormBalance} /> */}
         <Field name="advanced" component={this.renderFormAdvanced} />
 
         <Row>
-          {this.props.assetCreationForm.advanced && (
-            <Col xs="8">
-              <Field
-                name="effectiveDate"
-                component={this.renderAdvancedOptions}
-                label="Effective Date"
-                placeholder="date"
-                type="date"
-              />
-            </Col>
-          )}
           {this.props.assetCreationForm.advanced &&
             this.state.assetTypes[this.props.assetCreationForm.type].liquidityScore && (
               <Col xs="4">
@@ -360,32 +393,23 @@ class AssetForm extends React.Component {
             type="button"
             onClick={this.props.handleSubmit(this.onSubmit)}
           >
-            {this.props.accountId === 'newAccount' ? 'Create!' : 'Save'}
+            {this.props.action === 'create' ? 'Create!' : 'Save'}
           </Button>
-          {this.props.accountId !== 'newAccount' ? (
+          {/* do not display delete for Create Modal, or Modal of Income/Mixed, index=-1 */}
+          {this.props.action !== 'create' && this.props.index !== -1 ? (
             <Button color="danger" outline type="button" onClick={this.onDelete}>
               Delete
             </Button>
           ) : (
             ''
           )}
-
-          {/* <Button
-            className="ml-auto"
-            color="link"
-            data-dismiss="modal"
-            type="button"
-            onClick={this.props.onToggle}
-          >
-            Close
-          </Button> */}
         </div>
       </Form>
     );
   }
 }
 
-const selector = formValueSelector('assetForm');
+const selector = formValueSelector('planForm');
 const mapStateToProps = state => {
   const assetCreationForm = selector(state, 'type', 'advanced');
   return {
@@ -393,15 +417,17 @@ const mapStateToProps = state => {
     assets: state.assets,
     transactions: state.transactions,
     currentFarm: state.currentFarm,
+    statements: state.statements,
+    currentFarmInfo: state.currentFarmInfo,
     initialValues: state.loadForm.values,
     assetCreationForm: assetCreationForm
   };
 };
 
-AssetForm = reduxForm({
-  form: 'assetForm',
+PlanForm = reduxForm({
+  form: 'planForm',
   enableReinitialize: true
-})(AssetForm);
+})(PlanForm);
 
 export default connect(mapStateToProps, {
   fetchAssets,
@@ -416,4 +442,4 @@ export default connect(mapStateToProps, {
   fetchFarm,
   editFarm,
   mountAssetCard
-})(AssetForm);
+})(PlanForm);

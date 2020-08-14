@@ -40,17 +40,6 @@ const currentFarmReducer = (farm = '', action) => {
   }
 };
 
-const currentReducer = (data = {}, action) => {
-  switch (action.type) {
-    case 'CURRENT_CHANGE_FARM':
-      return { ...data, currentFarm: action.payload };
-    case '':
-      return { ...data };
-    default:
-      return data;
-  }
-};
-
 const transactionsReducer = (data = {}, action) => {
   switch (action.type) {
     case 'FETCH_TRANSACTIONS':
@@ -96,6 +85,38 @@ const assetsReducer = (data = {}, action) => {
     case 'EDIT_ASSET':
       return { ...data, [action.payload._id]: action.payload };
     case 'DELETE_ASSET':
+      return _.omit(data, action.payload);
+    default:
+      return data;
+  }
+};
+
+const farmsReducer = (data = {}, action) => {
+  switch (action.type) {
+    case 'FETCH_FARM':
+      return action.payload;
+    case 'CREATE_FARM':
+      return action.payload;
+    case 'EDIT_FARM':
+      return action.payload;
+    case 'DELETE_FARM':
+      return {};
+    case 'SIGN_OUT':
+      return {};
+    default:
+      return data;
+  }
+};
+
+const accountPlansReducer = (data = {}, action) => {
+  switch (action.type) {
+    case 'FETCH_ACCOUNT_PLAN':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'CREATE_ACCOUNT_PLAN':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'EDIT_ACCOUNT_PLAN':
+      return { ...data, [action.payload._id]: action.payload };
+    case 'DELETE_ACCOUNT_PLAN':
       return _.omit(data, action.payload);
     default:
       return data;
@@ -169,6 +190,8 @@ export default combineReducers({
   example: exampleReducer,
   displayMode: recordDisplayModeReducer,
   currentFarm: currentFarmReducer,
+  currentFarmInfo : farmsReducer,
+  accountPlans: accountPlansReducer,
   transactions: transactionsReducer,
   ios: iosReducer,
   assets: assetsReducer,
