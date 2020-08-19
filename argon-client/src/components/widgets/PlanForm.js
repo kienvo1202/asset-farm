@@ -80,43 +80,35 @@ class PlanForm extends React.Component {
     if (this.props.action === 'create') {
       //Create a new plan account
       // const newPlan = await this.props.createAccountPlan(account);
-      const newPlan = await axios.post(`/api/v1/accountPlans/`,account)
+      const newPlan = await axios.post(`/api/v1/accountPlans/`, account);
 
       //Add new plan to array Portfolio in Farm
-      const portfolio = [...this.props.currentFarmInfo.portfolio]
-      portfolio.splice(
-        this.props.index + 1,
-        0,
-        newPlan.data.data.newDoc._id
-      );
-      
+      const portfolio = [...this.props.currentFarmInfo.portfolio];
+      portfolio.splice(this.props.index + 1, 0, newPlan.data.data.newDoc._id);
+
       await this.props.editFarm(this.props.currentFarm, { portfolio });
-      
     } else {
       await this.props.editAccountPlan(this.props.account._id, account);
-      
+
       // await axios.patch(`/api/v1/accountPlans/${this.props.account._id}`,account)
       //no need to edit Portfolio Farm
     }
     //refetch to fill portfolio...
-    await this.props.fetchFarm(this.props.currentFarm)
+    await this.props.fetchFarm(this.props.currentFarm);
     //recalculate
-    this.props.calculateFunction()
+    this.props.calculateFunction();
   };
 
   onDelete = async () => {
     this.props.onSubmitClose();
     // await this.props.deleteAccountPlan(this.props.account._id);
-    await axios.delete(`/api/v1/accountPlans/${this.props.account._id}`)
+    await axios.delete(`/api/v1/accountPlans/${this.props.account._id}`);
 
-    const portfolio = [...this.props.currentFarmInfo.portfolio]
-      portfolio.splice(
-        this.props.index,
-        1
-      );
+    const portfolio = [...this.props.currentFarmInfo.portfolio];
+    portfolio.splice(this.props.index, 1);
     await this.props.editFarm(this.props.currentFarm, { portfolio });
-    await this.props.fetchFarm(this.props.currentFarm)
-    this.props.calculateFunction()
+    await this.props.fetchFarm(this.props.currentFarm);
+    this.props.calculateFunction();
   };
 
   renderFormOptionTypes = () => {
@@ -225,7 +217,7 @@ class PlanForm extends React.Component {
       </FormGroup>
     );
   };
-  
+
   render() {
     return (
       <Form role="form" onSubmit={this.props.handleSubmit(this.onSubmit)}>

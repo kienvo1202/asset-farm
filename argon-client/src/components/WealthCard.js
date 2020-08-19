@@ -270,7 +270,7 @@ class WealthCard extends React.Component {
 
     //Forecast and Add Plan Assets to chart data
     portfolioEffective.map(p => {
-      console.log("plan accounts",p)
+      // console.log("plan accounts",p)
       const mDiff = (p.effectiveDate.getFullYear() - new Date().getFullYear()) * 12 +
       (p.effectiveDate.getMonth() - new Date().getMonth())
 

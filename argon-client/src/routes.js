@@ -20,6 +20,7 @@ import Records from "views/Records.jsx";
 import Asset from "views/Asset.jsx";
 import IO from "views/IO.jsx";
 import Budget from "views/Budget.jsx";
+import Marketplace from "views/Marketplace.jsx";
 import Wealth from "views/Wealth.jsx";
 import Profile from "views/examples/Profile.jsx";
 import Maps from "views/examples/Maps.jsx";
@@ -40,22 +41,38 @@ var routes = [
   {
     path: "/io",
     name: "Income & Expense",
-    icon: "ni ni-chart-bar-32 text-purple",
+    // icon: "ni ni-chart-bar-32 text-purple",
+    icon: "ni ni-credit-card text-orange",
     component: IO,
+    layout: "/admin"
+  },
+  {
+    path: "/budget",
+    name: "Budget",
+    icon: "fas fa-wallet text-blue",
+    component: Budget,
     layout: "/admin"
   },
   {
     path: "/asset",
     name: "Assets",
-    icon: "ni ni-planet text-blue",
+    // icon: "ni ni-planet text-blue",
+    icon: "ni ni-money-coins text-yellow",
     component: Asset,
     layout: "/admin"
   },
   {
     path: "/wealth",
     name: "Wealth Planning",
-    icon: "ni ni-single-02 text-yellow",
+    icon: "ni ni-chart-bar-32 text-green",
     component: Wealth,
+    layout: "/admin"
+  },
+  {
+    path: "/marketplace",
+    name: "Marketplace",
+    icon: "ni ni-shop text-purple",
+    component: Marketplace,
     layout: "/admin"
   },
   {

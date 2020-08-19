@@ -26,8 +26,7 @@ class IOCard extends React.Component {
   constructor() {
     super();
     this.state = {
-      displayMonth: [0, 1, 2, 3, 4, 5, 6],
-      period: 6
+      displayMonth: [...Array(12).keys()]
     };
   }
   async componentDidMount() {
@@ -65,17 +64,12 @@ class IOCard extends React.Component {
     );
 
     const res = countMonthlyTransaction.data.data
-      .filter(e => e.countTransaction >= mean - s)
+      .filter(e => e.countTransaction >= (mean - s))
       .map(e => e._id)
-      .slice(0,6); //last 12 motnhs
+      .slice(0,3); //last 12 motnhs
     
     return res;
   };
-
-  calculateAverageFlow= async (account, flatStatement,months ) => {
-    const res = _.mean(months.map(m => this.calculateMonthlyNetFlow(account, flatStatement, new Date(m)).net))
-    return res
-  }
 
   calculateIncomeStatement = async () => {
     const statement = {};
@@ -136,22 +130,11 @@ class IOCard extends React.Component {
   };
 
   iosRowRender = ioName => {
-    
     const data = Object.values(this.props.ios).filter(e => e.type === ioName);
     const flows = account => {
       if (_.isEmpty(this.props.statements.io)) return;
       return (
         <>
-          <td className="text-right">
-            {new Intl.NumberFormat('en-US').format(
-              _.round(
-                (this.props.statements.io[account._id].average *
-                  (this.props.ios[account._id].nativeDebitCredit ? 1 : -1)),
-                -3
-              )
-            )}
-          </td>
-          <td>budget</td>
           {this.state.displayMonth.map(m => {
             const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);
             return (
@@ -181,7 +164,7 @@ class IOCard extends React.Component {
   };
 
   render() {
-    console.log(this.props.statements.io)
+    // console.log(this.props.statements.io)
     return (
       <Card className="shadow">
         <CardHeader className="border-0">
@@ -201,8 +184,6 @@ class IOCard extends React.Component {
           <thead className="thead-light">
             <tr>
               <th scope="col">Items</th>
-              <th scope="col" className="text-right">Average</th>
-              <th scope="col" className="text-right">Budget</th>
               {this.state.displayMonth.map(e => {
                 return (
                   <th className="text-right" scope="col">
@@ -219,16 +200,6 @@ class IOCard extends React.Component {
           <tbody>
             <tr>
               <th scope="row">Total Income</th>
-              <td className="text-right"> 
-                {!_.isEmpty(this.props.statements.io) &&
-                  new Intl.NumberFormat('en-US').format(
-                    -_.round(
-                      this.props.statements.io['income'].average,
-                      -3
-                    )
-                  )}
-              </td>
-              <td>40,569</td>
               {!_.isEmpty(this.props.statements.io) &&
                 this.state.displayMonth.map(m => {
                   const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);
@@ -245,16 +216,6 @@ class IOCard extends React.Component {
             {this.iosRowRender('income')}
             <tr>
               <th scope="row">Total Expense</th>
-              <td className="text-right">
-                {!_.isEmpty(this.props.statements.io) &&
-                  new Intl.NumberFormat('en-US').format(
-                    _.round(
-                      this.props.statements.io['expense'].average,
-                      -3
-                    )
-                  )}
-              </td>
-              <td>294</td>
               {!_.isEmpty(this.props.statements.io) &&
                 this.state.displayMonth.map(m => {
                   const d = new Date(new Date().getFullYear(), new Date().getMonth() - m, 1);

@@ -9,6 +9,7 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
+
 } from 'reactstrap';
 import _ from 'lodash';
 
@@ -16,43 +17,27 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import axios from 'axios';
 import {
-  fetchAssets,
-  createAsset,
-  editAsset,
-  deleteAsset,
-  fetchAccountPlan,
-  createAccountPlan,
-  editAccountPlan,
-  deleteAccountPlan,
-  fetchFarm,
-  editFarm,
+  editIO,
   loadFormValues,
   mountAssetCard
 } from '../../actions';
-import { accountTypesDefaultValues } from '../../utils/constants';
 
-class NetIncomeForm extends React.Component {
+class BudgetForm extends React.Component {
   constructor() {
     super();
-    this.state = {
-      assetTypes: accountTypesDefaultValues
-    };
   }
-  componentDidMount() {
-    //this.props.loadFormValues(this.props.initialProps);
-  }
+  
   onSubmit = async formValues => {
     this.props.onSubmitClose();
-    const type = this.props.type === 'plan' ? 'averageNetIncomePlan' : 'averageNetIncomeDefault';
-    await this.props.editFarm(this.props.currentFarm, { [type]: formValues.amount });
-    this.props.calculateFunction();
+    await this.props.editIO(this.props.account._id,{budget:formValues.budget || 0})
+    
   };
-
-  renderFormAmount = ({ input }) => {
+  
+  renderFormBudget = ({ input }) => {
     return (
       <FormGroup>
         <label className="form-control-label" htmlFor="input-description">
-          Investable Net Income
+          Budget Amount
         </label>
         <InputGroup className="input-group-alternative">
           <InputGroupAddon addonType="prepend">
@@ -65,25 +50,13 @@ class NetIncomeForm extends React.Component {
       </FormGroup>
     );
   };
-
+  
   render() {
-    const avgNetIncome = _.round(
-      -this.props.statements.io['income'].average - this.props.statements.io['expense'].average,
-      -3
-    );
     return (
       <Form role="form" onSubmit={this.props.handleSubmit(this.onSubmit)}>
-        <Field name="amount" component={this.renderFormAmount} />
+        <Field name="budget" component={this.renderFormBudget} />
+        
         <div className="text-center">
-          <Button
-            className="my-4"
-            color="primary"
-            type="button"
-            size="sm"
-            onClick={() => this.props.loadFormValues({ amount: avgNetIncome })}
-          >
-            Use Average Net Income
-          </Button>
           <Button
             className="my-4"
             color="primary"
@@ -99,7 +72,7 @@ class NetIncomeForm extends React.Component {
   }
 }
 
-const selector = formValueSelector('netIncomeForm');
+const selector = formValueSelector('budgeteForm');
 const mapStateToProps = state => {
   const assetCreationForm = selector(state, 'type', 'advanced');
   return {
@@ -114,22 +87,13 @@ const mapStateToProps = state => {
   };
 };
 
-NetIncomeForm = reduxForm({
-  form: 'netIncomeForm',
+BudgetForm = reduxForm({
+  form: 'budgeteForm',
   enableReinitialize: true
-})(NetIncomeForm);
+})(BudgetForm);
 
 export default connect(mapStateToProps, {
-  fetchAssets,
-  createAsset,
-  editAsset,
-  deleteAsset,
+  editIO,
   loadFormValues,
-  fetchAccountPlan,
-  createAccountPlan,
-  editAccountPlan,
-  deleteAccountPlan,
-  fetchFarm,
-  editFarm,
-  mountAssetCard
-})(NetIncomeForm);
+  mountAssetCard,
+})(BudgetForm);
